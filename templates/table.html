@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+	<body>
+		
+		<table>
+			<link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet" type="text/css" />
+			<thead>
+				<tr>
+				{% for key in keys %}
+					<th style="text-align: center; vertical-align: middle;">{{ key }}</th>
+				{% endfor %}
+				</tr>
+			</thead>
+			<tbody>
+			{% for values in values_list %}
+				<tr>
+				{% for value in values %}	
+					<td style="text-align: center; vertical-align: middle;">{{ value }}</td>
+				{% endfor %}
+				</tr>
+			{% endfor %}
+			</tbody>
+		</table>
+
+		<nav>
+			<p><font size="4">If you are satisfied with this program: </font>
+			<a target="_blank" rel="noopener noreferrer" href="{{ url_for('save_pdf', mode='sono') }}"> Get it as PDF </a></p>
+		</nav>
+
+		<table>
+			<link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet" type="text/css" />
+			<thead>
+				<tr>
+				{% for key in welcome_keys %}
+					<th style="text-align: center; vertical-align: middle;">{{ key }}</th>
+				{% endfor %}
+				</tr>
+			</thead>
+			<tbody>
+			{% for values in welcome_values_list %}
+				<tr>
+				{% for value in values %}	
+					<td style="text-align: center; vertical-align: middle;">{{ value }}</td>
+				{% endfor %}
+				</tr>
+			{% endfor %}
+			</tbody>
+		</table>
+
+		<nav>
+			<p><font size="4">If you are satisfied with this program: </font>
+			<a target="_blank" rel="noopener noreferrer" href="{{ url_for('save_pdf', mode='welcome') }}"> Get it as PDF </a></p>
+		</nav>
+
+		<form action = "http://localhost:5000/submit" method = "POST" enctype="multipart/form-data">
+			<p><font size="4">If you are not satisfied with this program, please click on the following button: </font>
+<!--          	<input type = "file" name = "program_file" accept = .pdf /> -->
+			<input type = "submit" name="submit_button" value = "Generate new program" /></p>
+		</form>
+	
+	</body>
+</html>

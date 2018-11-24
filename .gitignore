@@ -1,0 +1,10 @@
+# Logs and databases #
+######################
+*.log
+*.sql
+*.sqlite
+
+# Ressource files #
+###################
+*.csv
+*.pdf
