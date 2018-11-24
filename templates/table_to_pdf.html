@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+	<body>
+		
+		<table>
+			<link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet" type="text/css" />
+			<thead>
+				<tr>
+				{% for key in keys %}
+					<th style="text-align: center; vertical-align: middle;">{{ key }}</th>
+				{% endfor %}
+				</tr>
+			</thead>
+			<tbody>
+			{% for values in values_list %}
+				<tr>
+				{% for value in values %}	
+					<td style="text-align: center; vertical-align: middle;">{{ value }}</td>
+				{% endfor %}
+				</tr>
+			{% endfor %}
+			</tbody>
+		
+		</table>
+	</body>
+</html>

@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+   <body>
+      <form action = "http://localhost:5000/submit" method = "POST" enctype = "multipart/form-data">
+      	<p>Choose a mid-week program file. Ex: Prog VCM - 12 décembre 2018.pdf => 
+         <input type = "file" name = "program_file" accept = .pdf /></p>
+         <p>Choose a week-end program file. Ex: programme_trimestriel_2.pdf => 
+         <input type = "file" name = "program_file_2" accept = .pdf /></p>
+         <p>Choose a file containing brother names that can pass microphones. Ex: micro_brothers.csv => 
+         <input type = "file" name = "micro_bro_file" accept = .csv /></p>
+         <p>Choose a file containing brother names that are in your sono team. Ex: sono_brothers.csv => 
+         <input type = "file" name = "sono_bro_file" accept = .csv /></p>
+         <p>Choose a file containing brother names that are in your welcome team. Ex: welcome_brothers.csv => 
+         <input type = "file" name = "welcome_bro_file" accept = .csv /></p>
+         <input type = "submit" name="submit_button" value = "Upload" />
+      </form>
+   </body>
+</html>
