@@ -11,10 +11,11 @@ from unidecode import unidecode
 from collections import OrderedDict
 from random import sample
 import csv
+import mysql.connector
 
 class Programmer():
 
-	def __init__(self, program_file: str, program_file_2: str, brothers_file: str, sono_file: str, welcome_file: str):
+	def __init__(self, program_file: str="", program_file_2: str="", brothers_file: str="", sono_file: str="", welcome_file: str=""):
 		""" 
 		Programmer init
 
@@ -22,50 +23,80 @@ class Programmer():
 		:type program_file: str
 		"""
 		# get config
-		# config_parser = configparser.ConfigParser()
+		config_parser = configparser.ConfigParser()
 		dir_path = os.path.dirname(os.path.realpath(__file__))
 		dir_path = dir_path.replace("core", "")
-		# config_file_path = os.path.join(dir_path, "config.cfg")
+		config_file_path = os.path.join(dir_path, "config.cfg")
 		
-		# if os.path.isfile(config_file_path):
-		# 	config_parser.read(config_file_path)
-		# else:
-		# 	print("Could not find config file !\n{}".format(config_file_path))
+		if os.path.isfile(config_file_path):
+			config_parser.read(config_file_path)
+		else:
+			print("Could not find config file !\n{}".format(config_file_path))
 
-		# Input and output files
-		self.input_file = os.path.abspath(program_file)
-		self.input_file_2 = os.path.abspath(program_file_2)
-		self.output_csv = os.path.join(dir_path, "sono_program.csv")
+		# Connect to DB
+		self.mydb = mysql.connector.connect(database=config_parser["CONNECTION"]["DATABASE"], 
+			host= config_parser["CONNECTION"]["HOST"], 
+			user=config_parser["CONNECTION"]["USER"], 
+			passwd=config_parser["CONNECTION"]["PASSWORD"])
 
-		# Class variables
-		self.months_list = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", 
-		"septembre", "octobre", "novembre", "décembre"]
-		
-		self.brothers_list = []
-		with open(brothers_file, "r") as my_csv:
-			handle = csv.reader(my_csv)
-			for row in handle:
-				self.brothers_list.append(row[0])
-		
-		self.sono_list = []
-		with open(sono_file, "r") as my_csv:
-			handle = csv.reader(my_csv)
-			for row in handle:
-				self.sono_list.append(row[0])
+		self.cur = self.mydb.cursor()
 
-		self.welcome_list = []
-		with open(welcome_file, "r") as my_csv:
-			handle = csv.reader(my_csv)
-			for row in handle:
-				self.welcome_list.append(row[0])
-		
-		self.brother_actions_dict = OrderedDict()
-		self.sono_program_dict = OrderedDict()
-		self.welcome_program_dict = OrderedDict()
+		if program_file != "":
+			# Input and output files
+			self.input_file = os.path.abspath(program_file)
+			self.input_file_2 = os.path.abspath(program_file_2)
+			self.output_csv = os.path.join(dir_path, "sono_program.csv")
 
-		self.weekend_dates = []
-		self.weekends_bro = []
-		self.busy_bro_list = []
+			# Class variables
+			self.months_list = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", 
+			"septembre", "octobre", "novembre", "décembre"]
+			
+			self.brothers_list = []
+			with open(brothers_file, "r") as my_csv:
+				handle = csv.reader(my_csv)
+				for row in handle:
+					self.brothers_list.append(row[0])
+			
+			self.sono_list = []
+			with open(sono_file, "r") as my_csv:
+				handle = csv.reader(my_csv)
+				for row in handle:
+					self.sono_list.append(row[0])
+
+			self.welcome_list = []
+			with open(welcome_file, "r") as my_csv:
+				handle = csv.reader(my_csv)
+				for row in handle:
+					self.welcome_list.append(row[0])
+			
+			self.brother_actions_dict = OrderedDict()
+			self.sono_program_dict = OrderedDict()
+			self.welcome_program_dict = OrderedDict()
+
+			self.weekend_dates = []
+			self.weekends_bro = []
+			self.busy_bro_list = []
+
+	def insert_DB(self, date, name, part):
+		"""
+		Insert date and names of meeting actors.
+
+		:param date: date of the meeting
+		:type date: date
+
+		:param name: actor during this meeting
+		:type name: str
+
+		:param part: part of the meeting during which the actor acts
+		:type part: str
+
+		:return: None
+		"""
+		data_dict = {"DATE": date, "NAME": name, "PART": part}
+		query = "INSERT INTO date_actors (date, name, part) VALUES (%(DATE)s, %(NAME)s, %(PART)s);"
+
+		self.cur.execute(query, data_dict)
+		self.mydb.commit()
 
 	def extract_text_from_pdf_file(self, filename: str):
 		"""
