@@ -9,6 +9,8 @@ dir_path = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(os.path.join(dir_path, "core"))
 from programs_analysis import Programmer
 
+# Add comment to test github branch management
+
 app = Flask(__name__)
 
 # Declare your table
@@ -75,7 +77,7 @@ def generate_program(program_file, program_file_2, brothers_file, sono_file, wel
 	absolute_program_file = os.path.join(dir_path, program_file.filename)
 	absolute_program_file_2 = os.path.join(dir_path, program_file_2.filename)
 	absolute_brothers_file = os.path.join(dir_path, "ressources", brothers_file.filename)
-	absolute_sono_file = os.path.join(dir_path, "ressources", sono_file.filename)
+	absolute_sono_file = os.path.join(dir_path, sono_file.filename)
 	absolute_welcome_file = os.path.join(dir_path, "ressources", welcome_file.filename)
 	
 	program_file.save(absolute_program_file)
