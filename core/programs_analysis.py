@@ -34,12 +34,12 @@ class Programmer():
 			print("Could not find config file !\n{}".format(config_file_path))
 
 		# Connect to DB
-		self.mydb = mysql.connector.connect(database=config_parser["CONNECTION"]["DATABASE"], 
-			host= config_parser["CONNECTION"]["HOST"], 
-			user=config_parser["CONNECTION"]["USER"], 
-			passwd=config_parser["CONNECTION"]["PASSWORD"])
+		# self.mydb = mysql.connector.connect(database=config_parser["CONNECTION"]["DATABASE"], 
+		# 	host= config_parser["CONNECTION"]["HOST"], 
+		# 	user=config_parser["CONNECTION"]["USER"], 
+		# 	passwd=config_parser["CONNECTION"]["PASSWORD"])
 
-		self.cur = self.mydb.cursor()
+		# self.cur = self.mydb.cursor()
 
 		if program_file != "":
 			# Input and output files

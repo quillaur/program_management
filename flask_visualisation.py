@@ -94,7 +94,7 @@ def generate_program(program_file, program_file_2, brothers_file, sono_file, wel
 def upload():
 	
 	if request.method == "POST":
-		if request.form["validate_button"] == "Upload_2":
+		if request.form["submit_button"] == "Upload_2":
 			name = request.form['name']
 			date = request.form['date']
 			part = request.form['part']
@@ -104,6 +104,7 @@ def upload():
 			return msg
 		
 		elif request.form["submit_button"] == "Upload": 
+			date = [request.form['month']]
 			program_file = request.files["program_file"]
 			program_file_2 = request.files["program_file_2"]
 			brothers_file = request.files["micro_bro_file"]
@@ -139,10 +140,11 @@ def upload():
 			my_txt.write("\n")
 			my_txt.write(str(welcome_contents))
 		
-		return render_template("table.html", keys=col_names, values_list=contents, welcome_keys=welcome_col_names, welcome_values_list=welcome_contents)
+		return render_template("table.html", month=date, keys=col_names, values_list=contents, welcome_keys=welcome_col_names, welcome_values_list=welcome_contents)
 	
 	dropdown_list = ["Quillet A", "Pereira T", "Henry L"]
-	return render_template("upload.html", dropdown_list=dropdown_list)
+	dropdown_months_list = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"]
+	return render_template("upload.html", dropdown_list=dropdown_list, dropdown_months_list=dropdown_months_list)
 
 @app.route('/save_pdf/<mode>', methods=["GET", "POST"])
 def save_pdf(mode):

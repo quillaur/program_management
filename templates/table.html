@@ -4,13 +4,18 @@
 		
 		<table>
 			<link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet" type="text/css" />
-			<thead>
-				<tr>
-				{% for key in keys %}
-					<th style="text-align: center; vertical-align: middle;">{{ key }}</th>
+			<col>
+ 			<colgroup span="5"></colgroup>
+ 			<tr style="text-align: center; vertical-align: middle; color: #006699; font-size: 200%; border-bottom: solid 0.25em black;">
+		    	{% for key in month %}
+					<th colspan="5" scope="colgroup"><p>Programme Micros/Scène<br/>{{ key }} 2018</p></th>
 				{% endfor %}
-				</tr>
-			</thead>
+			</tr>
+			<tr style="text-align: center; vertical-align: middle; color: #006699; font-size: 130%;">
+			{% for key in keys %}
+				<th scope="col">{{ key }}</th>
+			{% endfor %}
+			</tr>
 			<tbody>
 			{% for values in values_list %}
 				<tr>
