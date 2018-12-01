@@ -4,12 +4,11 @@ import os
 from collections import OrderedDict
 import sys
 from ast import literal_eval
+from datetime import datetime
 # My specific imports
 dir_path = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(os.path.join(dir_path, "core"))
 from programs_analysis import Programmer
-
-# Add comment to test github branch management
 
 app = Flask(__name__)
 
@@ -95,8 +94,16 @@ def generate_program(program_file, program_file_2, brothers_file, sono_file, wel
 def upload():
 	
 	if request.method == "POST":
-
-		if request.form["submit_button"] == "Upload": 
+		if request.form["validate_button"] == "Upload_2":
+			name = request.form['name']
+			date = request.form['date']
+			part = request.form['part']
+			msg = "I inserted: date: {} / name: {}".format(date, name)
+			pgr = Programmer()
+			pgr.insert_DB(date, name, part)
+			return msg
+		
+		elif request.form["submit_button"] == "Upload": 
 			program_file = request.files["program_file"]
 			program_file_2 = request.files["program_file_2"]
 			brothers_file = request.files["micro_bro_file"]
@@ -111,7 +118,7 @@ def upload():
 			contents = [[v for k,v in item.items()] for item in items]
 
 			# Formatting welcome program for HTML
-			print("wlecome dict: {}".format(welcome_program_dict))
+			print("welcome dict: {}".format(welcome_program_dict))
 			items = format_dict_to_table(welcome_program_dict, "welcome")
 			welcome_col_names = [key for key in items[0].keys()]
 			welcome_contents = [[v for k,v in item.items()] for item in items]
@@ -134,7 +141,8 @@ def upload():
 		
 		return render_template("table.html", keys=col_names, values_list=contents, welcome_keys=welcome_col_names, welcome_values_list=welcome_contents)
 	
-	return render_template("upload.html")
+	dropdown_list = ["Quillet A", "Pereira T", "Henry L"]
+	return render_template("upload.html", dropdown_list=dropdown_list)
 
 @app.route('/save_pdf/<mode>', methods=["GET", "POST"])
 def save_pdf(mode):
@@ -165,7 +173,6 @@ def save_pdf(mode):
 		html = render_template('table_to_pdf.html', keys=welcome_col_names, values_list=welcome_contents)
 	
 	return render_pdf(HTML(string=html))
-
 
 if __name__ == '__main__':
 	app.run(debug = True)

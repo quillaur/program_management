@@ -2,6 +2,18 @@
 <html>
    <body>
       <form action = "http://localhost:5000/submit" method = "POST" enctype = "multipart/form-data">
+         <input type="date" name="date" placeholder="DD-MM-YYYY">
+         <select name = "name">
+            {% for each in dropdown_list %}
+               <option value="{{each}}">{{each}}</option>
+            {% endfor %}
+         </select>
+         <select name = "part">
+               <option value="1">1</option>
+               <option value="2">2</option>
+         </select>
+         <input type="submit" name="validate_button" value = "Upload_2" class="button -green center">
+
       	<p>Choose a mid-week program file. Ex: Prog VCM - 12 décembre 2018.pdf => 
          <input type = "file" name = "program_file" accept = .pdf /></p>
          <p>Choose a week-end program file. Ex: programme_weekends.csv => 
