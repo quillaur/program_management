@@ -12,8 +12,14 @@
                <option value="1">1</option>
                <option value="2">2</option>
          </select>
-         <input type="submit" name="validate_button" value = "Upload_2" class="button -green center">
+         <input type="submit" name="submit_button" value = "Upload_2" class="button -green center">
 
+         <p>Choose a month => 
+         <select name = "month">
+            {% for each in dropdown_months_list %}
+               <option value="{{each}}">{{each}}</option>
+            {% endfor %}
+         </select>
       	<p>Choose a mid-week program file. Ex: Prog VCM - 12 décembre 2018.pdf => 
          <input type = "file" name = "program_file" accept = .pdf /></p>
          <p>Choose a week-end program file. Ex: programme_weekends.csv => 
