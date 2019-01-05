@@ -49,7 +49,7 @@ def format_dict_to_table(program_dict: dict, mode: str):
 
 	return items
 
-def generate_program(program_file, program_file_2, brothers_file, sono_file, welcome_file):
+def generate_program(program_file, program_file_2, input_date):
 	"""
 	Generate program for sono from filename
 
@@ -59,33 +59,18 @@ def generate_program(program_file, program_file_2, brothers_file, sono_file, wel
 	:param program_file_2: class object containing the content of the PDF file
 	:type program_file: <class 'werkzeug.datastructures.FileStorage'>
 
-	:param brothers_file: class object containing the names of all brothers able to pass microphones in CSV format
-	:type brothers_file: <class 'werkzeug.datastructures.FileStorage'>
-
-	:param sono_file: class object containing the names of all brothers that are part of the sono team
-	:type sono_file: <class 'werkzeug.datastructures.FileStorage'>
-
-	:param welcome_file: class object containing the names of all brothers that are part of the welcome team
-	:type welcome_file: <class 'werkzeug.datastructures.FileStorage'>
-
 	:return: dictionary containing the program
 	:rtype: dict
 	"""
 	dir_path = os.path.dirname(os.path.realpath(__file__))
 	
-	absolute_program_file = os.path.join(dir_path, program_file.filename)
-	absolute_program_file_2 = os.path.join(dir_path, program_file_2.filename)
-	absolute_brothers_file = os.path.join(dir_path, "ressources", brothers_file.filename)
-	absolute_sono_file = os.path.join(dir_path, sono_file.filename)
-	absolute_welcome_file = os.path.join(dir_path, "ressources", welcome_file.filename)
+	absolute_program_file = os.path.join(dir_path, "resources", program_file.filename)
+	absolute_program_file_2 = os.path.join(dir_path, "resources", program_file_2.filename)
 	
 	program_file.save(absolute_program_file)
 	program_file_2.save(absolute_program_file_2)
-	brothers_file.save(absolute_brothers_file)
-	sono_file.save(absolute_sono_file)
-	welcome_file.save(absolute_welcome_file)
 	
-	programmer = Programmer(absolute_program_file, absolute_program_file_2, absolute_brothers_file, absolute_sono_file, absolute_welcome_file)
+	programmer = Programmer(absolute_program_file, absolute_program_file_2, input_date)
 	sono_program_dict = programmer.run()
 
 	return sono_program_dict
@@ -104,13 +89,10 @@ def upload():
 			return msg
 		
 		elif request.form["submit_button"] == "Upload": 
-			date = [request.form['month']]
+			input_date = request.form['month']
 			program_file = request.files["program_file"]
 			program_file_2 = request.files["program_file_2"]
-			brothers_file = request.files["micro_bro_file"]
-			sono_file = request.files["sono_bro_file"]
-			welcome_file = request.files["welcome_bro_file"]
-			response = generate_program(program_file, program_file_2, brothers_file, sono_file, welcome_file)
+			response = generate_program(program_file, program_file_2, input_date)
 			sono_program_dict, welcome_program_dict = response[0], response[1]
 
 			# Formatting sono program for HTML
@@ -129,7 +111,7 @@ def upload():
 			return render_template("upload.html")
 
 		dir_path = os.path.dirname(os.path.realpath(__file__))
-		absolute_file = os.path.join(dir_path, "ressources", "results_content.txt")
+		absolute_file = os.path.join(dir_path, "resources", "results_content.txt")
 
 		with open(absolute_file, "w") as my_txt:
 			my_txt.write(str(col_names))
@@ -140,7 +122,7 @@ def upload():
 			my_txt.write("\n")
 			my_txt.write(str(welcome_contents))
 		
-		return render_template("table.html", month=date, keys=col_names, values_list=contents, welcome_keys=welcome_col_names, welcome_values_list=welcome_contents)
+		return render_template("table.html", month=input_date, keys=col_names, values_list=contents, welcome_keys=welcome_col_names, welcome_values_list=welcome_contents)
 	
 	dropdown_list = ["Quillet A", "Pereira T", "Henry L"]
 	dropdown_months_list = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"]

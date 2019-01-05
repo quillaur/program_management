@@ -15,7 +15,7 @@ import mysql.connector
 
 class Programmer():
 
-	def __init__(self, program_file: str="", program_file_2: str="", brothers_file: str="", sono_file: str="", welcome_file: str=""):
+	def __init__(self, program_file: str, program_file_2: str, input_date: str):
 		""" 
 		Programmer init
 
@@ -23,13 +23,13 @@ class Programmer():
 		:type program_file: str
 		"""
 		# get config
-		config_parser = configparser.ConfigParser()
+		config = configparser.ConfigParser()
 		dir_path = os.path.dirname(os.path.realpath(__file__))
 		dir_path = dir_path.replace("core", "")
 		config_file_path = os.path.join(dir_path, "config.cfg")
 		
 		if os.path.isfile(config_file_path):
-			config_parser.read(config_file_path)
+			config.read(config_file_path)
 		else:
 			print("Could not find config file !\n{}".format(config_file_path))
 
@@ -41,7 +41,7 @@ class Programmer():
 
 		# self.cur = self.mydb.cursor()
 
-		if program_file != "":
+		if program_file is not None:
 			# Input and output files
 			self.input_file = os.path.abspath(program_file)
 			self.input_file_2 = os.path.abspath(program_file_2)
@@ -50,21 +50,22 @@ class Programmer():
 			# Class variables
 			self.months_list = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", 
 			"septembre", "octobre", "novembre", "décembre"]
+			self.input_date = input_date
 			
 			self.brothers_list = []
-			with open(brothers_file, "r") as my_csv:
+			with open(config["FILES"]["MICRO_BROS"], "r") as my_csv:
 				handle = csv.reader(my_csv)
 				for row in handle:
 					self.brothers_list.append(row[0])
 			
 			self.sono_list = []
-			with open(sono_file, "r") as my_csv:
+			with open(config["FILES"]["SONO_BROS"], "r") as my_csv:
 				handle = csv.reader(my_csv)
 				for row in handle:
 					self.sono_list.append(row[0])
 
 			self.welcome_list = []
-			with open(welcome_file, "r") as my_csv:
+			with open(config["FILES"]["WELCOME_BROS"], "r") as my_csv:
 				handle = csv.reader(my_csv)
 				for row in handle:
 					self.welcome_list.append(row[0])
@@ -156,21 +157,20 @@ class Programmer():
 			# Looking for a date
 			if part_1 is False:
 				
-				for month in self.months_list:
-					# Add a space to month search to be more specific and remove accents and capitalize letters
-					month = " " + unidecode(month.lower())
+				# Add a space to month search to be more specific and remove accents and capitalize letters
+				month = " " + unidecode(self.input_date.lower())
 
-					if " decembre" in unidecode(line.lower()):
-						date = line.strip()
+				if month in unidecode(line.lower()):
+					date = line.strip()
 
-						# We enter the first part of the meeting
-						part_1 = True
+					# We enter the first part of the meeting
+					part_1 = True
 
-						if date not in self.brother_actions_dict.keys():
-							# Declare and insert keys individually to keep order in the dict							
-							self.brother_actions_dict[date] = OrderedDict()
-							self.brother_actions_dict[date]["Part_1"] = []
-							self.brother_actions_dict[date]["Part_2"] = []
+					if date not in self.brother_actions_dict.keys():
+						# Declare and insert keys individually to keep order in the dict							
+						self.brother_actions_dict[date] = OrderedDict()
+						self.brother_actions_dict[date]["Part_1"] = []
+						self.brother_actions_dict[date]["Part_2"] = []
 
 			# If we enter the "Vie Chrétienne" part, then set part tags accordingly
 			elif "CHRÉTIENNE" in line:
