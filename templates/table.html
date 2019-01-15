@@ -7,9 +7,7 @@
 			<col>
  			<colgroup span="5"></colgroup>
  			<tr style="text-align: center; vertical-align: middle; color: #006699; font-size: 200%; border-bottom: solid 0.25em black;">
-		    	{% for key in month %}
-					<th colspan="5" scope="colgroup"><p>Programme Micros/Scène<br/>{{ key }} 2018</p></th>
-				{% endfor %}
+				<th colspan="5" scope="colgroup"><p>Programme Micros/Scène<br/>{{ month }} 2018</p></th>
 			</tr>
 			<tr style="text-align: center; vertical-align: middle; color: #006699; font-size: 130%;">
 			{% for key in keys %}
@@ -32,7 +30,7 @@
 			<a target="_blank" rel="noopener noreferrer" href="{{ url_for('save_pdf', mode='sono') }}"> Get it as PDF </a></p>
 		</nav>
 
-		<table>
+		<!-- <table>
 			<link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet" type="text/css" />
 			<thead>
 				<tr>
@@ -50,12 +48,12 @@
 				</tr>
 			{% endfor %}
 			</tbody>
-		</table>
+		</table> -->
 
-		<nav>
+<!-- 		<nav>
 			<p><font size="4">If you are satisfied with this program: </font>
 			<a target="_blank" rel="noopener noreferrer" href="{{ url_for('save_pdf', mode='welcome') }}"> Get it as PDF </a></p>
-		</nav>
+		</nav> -->
 
 		<form action = "http://localhost:5000/submit" method = "POST" enctype="multipart/form-data">
 			<p><font size="4">If you are not satisfied with this program, please click on the following button: </font>
