@@ -1,10 +1,13 @@
 # program_management
 Manage programs for the different meetings of my assembly of Jehovah's witnesses.
 
-# Include resources dir with test files
+# Project deployment
+## Install git if you do not have it already.
+'sudo apt install git'
+## Clone the repo
+'git clone https://github.com/quillaur/program_management.git '
 
-sudo apt install git
-git clone https://github.com/quillaur/program_management.git
+## 
 sudo apt install virtualenv
 virtualenv program_management/ -p /usr/bin/python3
 cd program_management/
