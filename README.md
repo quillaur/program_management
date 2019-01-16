@@ -18,7 +18,7 @@ Install virtualenv if you do not already have it.
 sudo apt install virtualenv
 ```
 
-Create the virutalenv directly inside
+Create the virutalenv using the main project directory (i.e the following command line) or another directory of your choice (not showed here).
 ```shell
 virtualenv program_management/ -p /usr/bin/python3
 ```
