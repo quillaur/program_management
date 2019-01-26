@@ -77,6 +77,9 @@ class Programmer():
 			self.weekend_dates = []
 			self.weekends_bro = []
 			self.busy_bro_list = []
+			self.other_language_bro = []
+
+			self.wt_conductor = "Delapille"
 
 	def insert_DB(self, date, name, part):
 		"""
@@ -230,8 +233,8 @@ class Programmer():
 			if v in self.weekend_dates:
 				# Keep available brothers
 				sono_list = [x for x in self.sono_list if x not in self.weekends_bro]
-				brothers_part_1_list = [x for x in self.brothers_list if x not in self.weekends_bro]
-				brothers_part_2_list = [x for x in self.brothers_list if x not in self.weekends_bro]
+				brothers_part_1_list = [x for x in self.brothers_list if x not in self.weekends_bro and self.wt_conductor not in x and x not in self.other_language_bro]
+				brothers_part_2_list = [x for x in self.brothers_list if x not in self.weekends_bro and self.wt_conductor not in x and x not in self.other_language_bro]
 				potential_stage_brothers = [x for x in self.brothers_list if x not in self.weekends_bro]
 
 			# Mid-week brother management
