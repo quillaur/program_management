@@ -407,10 +407,10 @@ class Programmer():
 		clean_pdf_text = self.extract_text_from_pdf_file(self.input_file)
 		self.get_brother_actions(clean_pdf_text)
 		self.make_sono_program()
-		self.make_welcome_program()
+		# self.make_welcome_program()
 		self.print_to_csv()
 
-		return [self.sono_program_dict, self.welcome_program_dict]
+		return self.sono_program_dict
 
 
 if __name__ == "__main__":

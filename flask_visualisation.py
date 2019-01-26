@@ -92,8 +92,7 @@ def upload():
 			input_date = request.form['month']
 			program_file = request.files["program_file"]
 			program_file_2 = request.files["program_file_2"]
-			response = generate_program(program_file, program_file_2, input_date)
-			sono_program_dict, welcome_program_dict = response[0], response[1]
+			sono_program_dict = generate_program(program_file, program_file_2, input_date)
 
 			# Formatting sono program for HTML
 			items = format_dict_to_table(sono_program_dict, "sono")
@@ -101,10 +100,10 @@ def upload():
 			contents = [[v for k,v in item.items()] for item in items]
 
 			# Formatting welcome program for HTML
-			print("welcome dict: {}".format(welcome_program_dict))
-			items = format_dict_to_table(welcome_program_dict, "welcome")
-			welcome_col_names = [key for key in items[0].keys()]
-			welcome_contents = [[v for k,v in item.items()] for item in items]
+			# print("welcome dict: {}".format(welcome_program_dict))
+			# items = format_dict_to_table(welcome_program_dict, "welcome")
+			# welcome_col_names = [key for key in items[0].keys()]
+			# welcome_contents = [[v for k,v in item.items()] for item in items]
 
 		elif request.form["submit_button"] == "Generate new program":
 
@@ -117,16 +116,11 @@ def upload():
 			my_txt.write(str(col_names))
 			my_txt.write("\n")
 			my_txt.write(str(contents))
-			my_txt.write("\n")
-			my_txt.write(str(welcome_col_names))
-			my_txt.write("\n")
-			my_txt.write(str(welcome_contents))
 		
-		return render_template("table.html", month=input_date, keys=col_names, values_list=contents, welcome_keys=welcome_col_names, welcome_values_list=welcome_contents)
+		return render_template("table.html", month=input_date, keys=col_names, values_list=contents)
 	
-	dropdown_list = ["Quillet A", "Pereira T", "Henry L"]
 	dropdown_months_list = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"]
-	return render_template("upload.html", dropdown_list=dropdown_list, dropdown_months_list=dropdown_months_list)
+	return render_template("upload.html", dropdown_months_list=dropdown_months_list)
 
 @app.route('/save_pdf/<mode>', methods=["GET", "POST"])
 def save_pdf(mode):
@@ -147,14 +141,12 @@ def save_pdf(mode):
 			results = handle.split("\n")
 			col_names = literal_eval(results[0])
 			contents = literal_eval(results[1])
-			welcome_col_names = literal_eval(results[2])
-			welcome_contents = literal_eval(results[3])
 
 	# Make a PDF straight from HTML in a string.
 	if mode == "sono":
 		html = render_template('table_to_pdf.html', keys=col_names, values_list=contents)
-	elif mode == "welcome":
-		html = render_template('table_to_pdf.html', keys=welcome_col_names, values_list=welcome_contents)
+	# elif mode == "welcome":
+	# 	html = render_template('table_to_pdf.html', keys=welcome_col_names, values_list=welcome_contents)
 	
 	return render_pdf(HTML(string=html))
 
