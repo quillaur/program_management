@@ -146,7 +146,9 @@ class Programmer():
 			next(handle)
 
 			for row in handle:
-				self.weekend_dates.append(row[0])
+				date = str(row[0]).split("/")
+				date = datetime(day=int(date[0]), month=int(date[1]), year=datetime.today().year).strftime('%d-%m-%Y')
+				self.weekend_dates.append(date)
 				self.weekends_bro.append(row[1:])
 
 		###########################################################################
@@ -166,10 +168,9 @@ class Programmer():
 				month = " " + unidecode(self.input_date.lower())
 
 				if month in unidecode(line.lower()):
-					print(month)
-					print(str(datetime.today().year))
-					date = " ".join([line.strip().split(" ")[0], self.month_str_to_int[month.strip()], str(datetime.today().year)])
-
+					date = [line.strip().split(" ")[0], self.month_str_to_int[month.strip()], str(datetime.today().year)]
+					date = datetime(day=int(date[0]), month=int(date[1]), year=datetime.today().year)
+					date = date.strftime('%d-%m-%Y')
 					# We enter the first part of the meeting
 					part_1 = True
 
@@ -232,7 +233,7 @@ class Programmer():
 				self.sono_program_dict[date]["Part 2"] = []
 				self.sono_program_dict[date]["Scène"] = ""
 		
-		for i, v in enumerate(ordered_dates):
+		for i, v in enumerate(self.sono_program_dict):
 			# Week-end brother management
 			if v in self.weekend_dates:
 				# Keep available brothers
@@ -340,9 +341,9 @@ class Programmer():
 		ordered_dates = []
 		for dates in zip(self.weekend_dates, date_list):
 			ordered_dates.extend(dates)
+
 		# Init program dict
 		for date in ordered_dates:
-
 			if date not in self.welcome_program_dict.keys():
 				self.welcome_program_dict[date] = []
 
