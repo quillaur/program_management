@@ -25,10 +25,8 @@
 			</tbody>
 		</table>
 
-		<nav>
-			<p><font size="4">If you are satisfied with this program: </font>
-			<a target="_blank" rel="noopener noreferrer" href="{{ url_for('save_pdf', mode='sono') }}"> Get it as PDF </a></p>
-		</nav>
+		<p><font size="5">This Program was saved at the following address: program_management/sono_program.csv</p>
+		<p><font size="5">If you are satisfied with this program, you can <a href="http://localhost:5000/submit">return to the main page</a>.</p>
 
 		<form action = "http://localhost:5000/submit" method = "POST" enctype="multipart/form-data">
 			<p><font size="4">If you are not satisfied with this program, please click on the following button: </font>
