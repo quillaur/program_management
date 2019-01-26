@@ -41,9 +41,6 @@ Insert the requested files and click the "upload" button.
 The result table should appear on your webpage.
 
 # TODO
-- Add test files and mode
-- Change date format in output table
-- Output results correctly in csv format
 - Send updated csv files from windows
-- Add rule about the WT reader (Hermann)
+- Take into consideration welcome brothers
 - Add a counting system which will allow to better choose brother to use
