@@ -122,33 +122,33 @@ def upload():
 	dropdown_months_list = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"]
 	return render_template("upload.html", dropdown_months_list=dropdown_months_list)
 
-@app.route('/save_pdf/<mode>', methods=["GET", "POST"])
-def save_pdf(mode):
-	"""
-	Save program to PDF
+# @app.route('/save_pdf/<mode>', methods=["GET", "POST"])
+# def save_pdf(mode):
+# 	"""
+# 	Save program to PDF
 
-	:param mode: which program am I saving?
-	:type mode: str
+# 	:param mode: which program am I saving?
+# 	:type mode: str
 
-	:return: None
-	"""
-	dir_path = os.path.dirname(os.path.realpath(__file__))
-	absolute_file = os.path.join(dir_path, "ressources", "results_content.txt")
+# 	:return: None
+# 	"""
+# 	dir_path = os.path.dirname(os.path.realpath(__file__))
+# 	absolute_file = os.path.join(dir_path, "ressources", "results_content.txt")
 
-	if os.path.exists(absolute_file):
-		with open(absolute_file, "r") as my_txt:
-			handle = my_txt.read()
-			results = handle.split("\n")
-			col_names = literal_eval(results[0])
-			contents = literal_eval(results[1])
+# 	if os.path.exists(absolute_file):
+# 		with open(absolute_file, "r") as my_txt:
+# 			handle = my_txt.read()
+# 			results = handle.split("\n")
+# 			col_names = literal_eval(results[0])
+# 			contents = literal_eval(results[1])
 
-	# Make a PDF straight from HTML in a string.
-	if mode == "sono":
-		html = render_template('table_to_pdf.html', keys=col_names, values_list=contents)
-	# elif mode == "welcome":
-	# 	html = render_template('table_to_pdf.html', keys=welcome_col_names, values_list=welcome_contents)
+# 	# Make a PDF straight from HTML in a string.
+# 	if mode == "sono":
+# 		html = render_template('table_to_pdf.html', keys=col_names, values_list=contents)
+# 	# elif mode == "welcome":
+# 	# 	html = render_template('table_to_pdf.html', keys=welcome_col_names, values_list=welcome_contents)
 	
-	return render_pdf(HTML(string=html))
+# 	return render_pdf(HTML(string=html))
 
 if __name__ == '__main__':
 	app.run(debug = True)
