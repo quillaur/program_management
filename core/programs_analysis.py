@@ -12,6 +12,7 @@ from collections import OrderedDict
 from random import sample
 import csv
 import mysql.connector
+from datetime import datetime
 
 class Programmer():
 
@@ -73,6 +74,7 @@ class Programmer():
 			self.brother_actions_dict = OrderedDict()
 			self.sono_program_dict = OrderedDict()
 			self.welcome_program_dict = OrderedDict()
+			self.month_str_to_int = {"janvier": "01", "fevrier": "02", "mars": "03", "avril": "04", "mai": "05", "juin": "06", "juillet": "07", "aout": "08", "septembre": "09", "octobre": "10", "novembre": "11", "decembre": "12"}
 
 			self.weekend_dates = []
 			self.weekends_bro = []
@@ -164,7 +166,9 @@ class Programmer():
 				month = " " + unidecode(self.input_date.lower())
 
 				if month in unidecode(line.lower()):
-					date = line.strip()
+					print(month)
+					print(str(datetime.today().year))
+					date = " ".join([line.strip().split(" ")[0], self.month_str_to_int[month.strip()], str(datetime.today().year)])
 
 					# We enter the first part of the meeting
 					part_1 = True
