@@ -3,8 +3,3 @@
 *.log
 *.sql
 *.sqlite
-
-# Ressource files #
-###################
-*.csv
-*.pdf
