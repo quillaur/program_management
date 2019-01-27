@@ -1,5 +1,4 @@
 from flask import Flask, render_template, request, Response, url_for
-from flask_weasyprint import HTML, render_pdf
 import os
 from collections import OrderedDict
 import sys
