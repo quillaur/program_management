@@ -2,14 +2,14 @@ from flask import Flask, render_template, request, Response, url_for
 import os
 from collections import OrderedDict
 import sys
-from ast import literal_eval
-from datetime import datetime
+
 # My specific imports
 dir_path = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(os.path.join(dir_path, "core"))
 from programs_analysis import Programmer
 
 app = Flask(__name__)
+
 
 # Declare your table
 def format_dict_to_table(program_dict: dict, mode: str):
@@ -48,6 +48,7 @@ def format_dict_to_table(program_dict: dict, mode: str):
 
 	return items
 
+
 def generate_program(program_file, program_file_2, input_date):
 	"""
 	Generate program for sono from filename
@@ -73,6 +74,7 @@ def generate_program(program_file, program_file_2, input_date):
 	sono_program_dict = programmer.run()
 
 	return sono_program_dict
+
 
 @app.route('/submit', methods=["GET", "POST"])
 def upload():
@@ -148,6 +150,7 @@ def upload():
 # 	# 	html = render_template('table_to_pdf.html', keys=welcome_col_names, values_list=welcome_contents)
 	
 # 	return render_pdf(HTML(string=html))
+
 
 if __name__ == '__main__':
 	app.run(debug = True)

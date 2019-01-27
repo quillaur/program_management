@@ -12,6 +12,7 @@ from random import sample
 import csv
 from datetime import datetime
 
+
 class Programmer():
 
 	def __init__(self, program_file: str, program_file_2: str, input_date: str):
@@ -66,26 +67,26 @@ class Programmer():
 
 			self.wt_conductor = "Delapille"
 
-	def insert_DB(self, date, name, part):
-		"""
-		Insert date and names of meeting actors.
-
-		:param date: date of the meeting
-		:type date: date
-
-		:param name: actor during this meeting
-		:type name: str
-
-		:param part: part of the meeting during which the actor acts
-		:type part: str
-
-		:return: None
-		"""
-		data_dict = {"DATE": date, "NAME": name, "PART": part}
-		query = "INSERT INTO date_actors (date, name, part) VALUES (%(DATE)s, %(NAME)s, %(PART)s);"
-
-		self.cur.execute(query, data_dict)
-		self.mydb.commit()
+	# def insert_DB(self, date, name, part):
+	# 	"""
+	# 	Insert date and names of meeting actors.
+	#
+	# 	:param date: date of the meeting
+	# 	:type date: date
+	#
+	# 	:param name: actor during this meeting
+	# 	:type name: str
+	#
+	# 	:param part: part of the meeting during which the actor acts
+	# 	:type part: str
+	#
+	# 	:return: None
+	# 	"""
+	# 	data_dict = {"DATE": date, "NAME": name, "PART": part}
+	# 	query = "INSERT INTO date_actors (date, name, part) VALUES (%(DATE)s, %(NAME)s, %(PART)s);"
+	#
+	# 	self.cur.execute(query, data_dict)
+	# 	self.mydb.commit()
 
 	def extract_text_from_pdf_file(self, filename: str):
 		"""
@@ -401,7 +402,3 @@ class Programmer():
 
 		return self.sono_program_dict
 
-
-if __name__ == "__main__":
-	programmer = Programmer()
-	programmer.run()
