@@ -1,4 +1,4 @@
-﻿DATE;ORATEUR;PRESIDENT;LECTEUR
-10-févr;Fontaine C;Henry L;Linot C
-17-févr;None;Jean D;Montillet W
-24-févr;Le Goanvec E;Linot C;Ouvrard E
+DATE,ORATEUR,PRESIDENT,LECTEUR
+10-02,Fontaine C,Henry L,Linot C
+17-02,None,Jean D,Montillet W
+24-02,Le Goanvec E,Linot C,Ouvrard E
