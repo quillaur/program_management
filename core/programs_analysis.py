@@ -43,23 +43,17 @@ class Programmer():
 			"septembre", "octobre", "novembre", "décembre"]
 			self.input_date = input_date
 			
-			self.brothers_list = []
-			with open(config["FILES"]["MICRO_BROS"], "r") as my_csv:
-				handle = csv.reader(my_csv)
-				for row in handle:
-					self.brothers_list.append(row[0])
-			
-			self.sono_list = []
-			with open(config["FILES"]["SONO_BROS"], "r") as my_csv:
-				handle = csv.reader(my_csv)
-				for row in handle:
-					self.sono_list.append(row[0])
+			def open_file_make_list(filename):
+				with open(filename, "r") as my_csv:
+					results_list = [row[0] for row in csv.reader(my_csv)]
 
-			self.welcome_list = []
-			with open(config["FILES"]["WELCOME_BROS"], "r") as my_csv:
-				handle = csv.reader(my_csv)
-				for row in handle:
-					self.welcome_list.append(row[0])
+				return results_list
+
+			self.brothers_list = open_file_make_list(os.path.join(config["FILES"]["BROTHER_PATH"], config["FILES"]["MICRO_BROS"]))			
+			self.sono_list = open_file_make_list(os.path.join(config["FILES"]["BROTHER_PATH"], config["FILES"]["SONO_BROS"]))
+			self.welcome_list = open_file_make_list(os.path.join(config["FILES"]["BROTHER_PATH"], config["FILES"]["WELCOME_BROS"]))
+			self.other_language_bro = open_file_make_list(os.path.join(config["FILES"]["BROTHER_PATH"], config["FILES"]["CHINESE_BROS"]))
+			self.brothers_list.extend(self.other_language_bro)
 			
 			self.brother_actions_dict = OrderedDict()
 			self.sono_program_dict = OrderedDict()
@@ -69,7 +63,6 @@ class Programmer():
 			self.weekend_dates = []
 			self.weekends_bro = []
 			self.busy_bro_list = []
-			self.other_language_bro = []
 
 			self.wt_conductor = "Delapille"
 
@@ -132,11 +125,11 @@ class Programmer():
 		######################## WEEK-END MEETINGS INFO ###########################
 		###########################################################################
 		with open(self.input_file_2, "r") as my_csv:
-			handle = csv.reader(my_csv, delimiter=';')
+			handle = csv.reader(my_csv, delimiter=',')
 			next(handle)
 
 			for row in handle:
-				date = str(row[0]).split("/")
+				date = str(row[0]).split("/") if "/" in row[0] else str(row[0]).split("-")
 				date = datetime(day=int(date[0]), month=int(date[1]), year=datetime.today().year).strftime('%d-%m-%Y')
 				self.weekend_dates.append(date)
 				self.weekends_bro.append(row[1:])
@@ -158,7 +151,13 @@ class Programmer():
 				month = " " + unidecode(self.input_date.lower())
 
 				if month in unidecode(line.lower()):
-					date = [line.strip().split(" ")[0], self.month_str_to_int[month.strip()], str(datetime.today().year)]
+					# If whatever is before the month is not an int, go to next line of text.
+					try:
+						day = int(line.strip().split(" ")[0])
+					except ValueError:
+						continue
+
+					date = [day, self.month_str_to_int[month.strip()], str(datetime.today().year)]
 					date = datetime(day=int(date[0]), month=int(date[1]), year=datetime.today().year)
 					date = date.strftime('%d-%m-%Y')
 					# We enter the first part of the meeting

@@ -63,8 +63,8 @@ def generate_program(program_file, program_file_2, input_date):
 	"""
 	dir_path = os.path.dirname(os.path.realpath(__file__))
 	
-	absolute_program_file = os.path.join(dir_path, "resources", program_file.filename)
-	absolute_program_file_2 = os.path.join(dir_path, "resources", program_file_2.filename)
+	absolute_program_file = os.path.join(dir_path, "resources/already_tested_programs", program_file.filename)
+	absolute_program_file_2 = os.path.join(dir_path, "resources/already_tested_programs", program_file_2.filename)
 	
 	program_file.save(absolute_program_file)
 	program_file_2.save(absolute_program_file_2)
