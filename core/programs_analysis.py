@@ -6,12 +6,10 @@
 import configparser
 import os
 import PyPDF2
-import fitz
 from unidecode import unidecode
 from collections import OrderedDict
 from random import sample
 import csv
-import mysql.connector
 from datetime import datetime
 
 class Programmer():
@@ -33,14 +31,6 @@ class Programmer():
 			config.read(config_file_path)
 		else:
 			print("Could not find config file !\n{}".format(config_file_path))
-
-		# Connect to DB
-		# self.mydb = mysql.connector.connect(database=config_parser["CONNECTION"]["DATABASE"], 
-		# 	host= config_parser["CONNECTION"]["HOST"], 
-		# 	user=config_parser["CONNECTION"]["USER"], 
-		# 	passwd=config_parser["CONNECTION"]["PASSWORD"])
-
-		# self.cur = self.mydb.cursor()
 
 		if program_file is not None:
 			# Input and output files
