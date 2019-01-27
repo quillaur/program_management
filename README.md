@@ -41,6 +41,5 @@ Insert the requested files and click the "upload" button.
 The result table should appear on your webpage.
 
 # TODO
-- Send updated csv files from windows
 - Take into consideration welcome brothers
 - Add a counting system which will allow to better choose brother to use
