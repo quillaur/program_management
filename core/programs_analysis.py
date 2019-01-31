@@ -135,6 +135,8 @@ class Programmer():
 				self.weekend_dates.append(date)
 				self.weekends_bro.append(row[1:])
 
+		print(self.weekend_dates)
+		print(self.weekends_bro)
 		###########################################################################
 		######################### WEEKLY MEETINGS INFO ############################
 		###########################################################################
@@ -212,6 +214,17 @@ class Programmer():
 		ordered_dates = []
 		for dates in zip(self.weekend_dates, date_list):
 			ordered_dates.extend(dates)
+
+		# Add missing dates
+		if len(self.weekend_dates) > len(date_list):
+			for date in self.weekend_dates:
+				if date not in ordered_dates:
+					ordered_dates.append(date)
+
+		else:
+			for date in date_list:
+				if date not in ordered_dates:
+					ordered_dates.append(date)
 
 		# Init program dict
 		for date in ordered_dates:
