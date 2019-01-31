@@ -1,4 +1,6 @@
 [FILES]
-MICRO_BROS: ../micro_brothers.csv
-SONO_BROS: ../sono_brothers.csv
-WELCOME_BROS: ../welcome_brothers.csv
+BROTHER_PATH: ../program_management/resources/brother_roles/
+MICRO_BROS: micro_brothers.csv
+SONO_BROS: sono_brothers.csv
+WELCOME_BROS: welcome_brothers.csv
+CHINESE_BROS: chinese_brothers.csv
