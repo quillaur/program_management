@@ -29,13 +29,13 @@ class Programmer():
 		:type input_date: str
 		"""
 		# get config
-		config = configparser.ConfigParser()
+		self.config = configparser.ConfigParser()
 		dir_path = os.path.dirname(os.path.realpath(__file__))
 		dir_path = dir_path.replace("core", "")
 		config_file_path = os.path.join(dir_path, "config.cfg")
 		
 		if os.path.isfile(config_file_path):
-			config.read(config_file_path)
+			self.config.read(config_file_path)
 		else:
 			print("Could not find config file !\n{}".format(config_file_path))
 
@@ -45,6 +45,7 @@ class Programmer():
 			self.input_file_2 = os.path.abspath(program_file_2)
 			self.welcome_file = os.path.abspath(welcome_file)
 			self.output_csv = os.path.join(dir_path, "sono_program.csv")
+			self.brothers_past_actions_file = os.path.join(self.config["FILES"]["BROTHER_PATH"], self.config["FILES"]["PAST_ACTIONS"])
 
 			# Class variables
 			self.months_list = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", 
@@ -57,12 +58,28 @@ class Programmer():
 
 				return results_list
 
-			self.brothers_list = open_file_make_list(os.path.join(config["FILES"]["BROTHER_PATH"], config["FILES"]["MICRO_BROS"]))			
-			self.sono_list = open_file_make_list(os.path.join(config["FILES"]["BROTHER_PATH"], config["FILES"]["SONO_BROS"]))
-			self.welcome_list = open_file_make_list(os.path.join(config["FILES"]["BROTHER_PATH"], config["FILES"]["WELCOME_BROS"]))
-			self.other_language_bro = open_file_make_list(os.path.join(config["FILES"]["BROTHER_PATH"], config["FILES"]["CHINESE_BROS"]))
+			self.brothers_list = open_file_make_list(os.path.join(self.config["FILES"]["BROTHER_PATH"],
+																  self.config["FILES"]["MICRO_BROS"]))
+			self.sono_list = open_file_make_list(os.path.join(self.config["FILES"]["BROTHER_PATH"],
+															  self.config["FILES"]["SONO_BROS"]))
+			self.welcome_list = open_file_make_list(os.path.join(self.config["FILES"]["BROTHER_PATH"],
+																 self.config["FILES"]["WELCOME_BROS"]))
+			self.other_language_bro = open_file_make_list(os.path.join(self.config["FILES"]["BROTHER_PATH"],
+																	   self.config["FILES"]["CHINESE_BROS"]))
 			self.brothers_list.extend(self.other_language_bro)
-			
+
+			with open(self.brothers_past_actions_file, "r") as my_csv:
+				handle = csv.reader(my_csv, delimiter=";")
+
+				self.brothers_past_actions = {
+					unidecode(row[0]).lower(): {
+						"sono": int(row[1]),
+						"micro": int(row[2]),
+						"stage": int(row[3])
+					}
+					for row in handle if "Name" not in row
+				}
+
 			self.brother_actions_dict = OrderedDict()
 			self.sono_program_dict = OrderedDict()
 			# self.welcome_program_dict = OrderedDict()
@@ -143,8 +160,7 @@ class Programmer():
 				date = datetime(day=int(date[0]), month=int(date[1]), year=datetime.today().year).strftime('%d-%m-%Y')
 				self.dates_list.append(date)
 				self.welcome_bro_schedule[date] = [unidecode(row[1].lower()), unidecode(row[2].lower())]
-		print(self.welcome_bro_schedule)
-		print(self.brothers_list)
+
 		###########################################################################
 		######################## WEEK-END MEETINGS INFO ###########################
 		###########################################################################
@@ -307,11 +323,27 @@ class Programmer():
 											and x not in self.brother_actions_dict[v]["Part_2"]
 											and x not in self.welcome_bro_schedule[v]]
 
-			# randomize list
-			sono_list = sample(sono_list, len(sono_list))
-			brothers_part_1_list = sample(brothers_part_1_list, len(brothers_part_1_list))
-			brothers_part_2_list = sample(brothers_part_2_list, len(brothers_part_2_list))
-			potential_stage_brothers = sample(potential_stage_brothers, len(potential_stage_brothers))
+			# order the brothers from the one that has done this job the least amount of times to the most.
+			# List of tuples here
+			sono_list = sorted([(brother, self.brothers_past_actions[brother]["sono"]) for brother in sono_list],
+							   key=lambda tup: tup[1])
+			# Make it a list
+			sono_list = [tup[0] for tup in sono_list]
+
+			brothers_part_1_list = sorted([(brother, self.brothers_past_actions[brother]["micro"])
+									for brother in brothers_part_1_list], key=lambda tup: tup[1])
+			# Make it a list
+			brothers_part_1_list = [tup[0] for tup in brothers_part_1_list]
+
+			brothers_part_2_list = sorted([(brother, self.brothers_past_actions[brother]["micro"])
+									for brother in brothers_part_2_list], key=lambda tup: tup[1])
+			# Make it a list
+			brothers_part_2_list = [tup[0] for tup in brothers_part_2_list]
+
+			potential_stage_brothers = sorted([(brother, self.brothers_past_actions[brother]["stage"])
+									for brother in potential_stage_brothers], key=lambda tup: tup[1])
+			# Make it a list
+			potential_stage_brothers = [tup[0] for tup in potential_stage_brothers]
 
 			# Looking for sono brother first
 			if len(sono_list) > 0:
@@ -321,16 +353,19 @@ class Programmer():
 					if sono_list[0] not in self.sono_program_dict[ordered_dates[i-1]]["Sono"]:
 						self.sono_program_dict[v]["Sono"] = sono_list[0].title()
 						self.busy_bro_list.append(sono_list[0])
+						self.brothers_past_actions[sono_list[0]]["sono"] +=1
 						del sono_list[0]
 					
 					else:
 						self.sono_program_dict[v]["Sono"] = sono_list[1].title()
 						self.busy_bro_list.append(sono_list[1])
+						self.brothers_past_actions[sono_list[1]]["sono"] += 1
 						del sono_list[1]
 				
 				else:
 					self.sono_program_dict[v]["Sono"] = sono_list[0].title()
 					self.busy_bro_list.append(sono_list[0])
+					self.brothers_past_actions[sono_list[0]]["sono"] += 1
 					del sono_list[0]
 
 			else:
@@ -344,21 +379,25 @@ class Programmer():
 					if sono_list[0] not in self.sono_program_dict[ordered_dates[i-1]]["Scène"]:
 						self.sono_program_dict[v]["Scène"] = sono_list[0].title()
 						self.busy_bro_list.append(sono_list[0])
+						self.brothers_past_actions[sono_list[0]]["stage"] += 1
 						del sono_list[0]
 					
 					else:
 						self.sono_program_dict[v]["Scène"] = sono_list[1].title()
 						self.busy_bro_list.append(sono_list[1])
+						self.brothers_past_actions[sono_list[1]]["stage"] += 1
 						del sono_list[1]
 				
 				else:
 					self.sono_program_dict[v]["Scène"] = sono_list[0].title()
 					self.busy_bro_list.append(sono_list[0])
+					self.brothers_past_actions[sono_list[0]]["stage"] += 1
 					del sono_list[0]
 
 			else:
 				self.sono_program_dict[v]["Scène"] = potential_stage_brothers[0]
 				self.busy_bro_list.append(potential_stage_brothers[0])
+				self.brothers_past_actions[potential_stage_brothers[0]]["stage"] += 1
 				del potential_stage_brothers[0]
 
 			# Now microphones part 1
@@ -367,6 +406,7 @@ class Programmer():
 				for brother in brothers_part_1_list[:2]:
 					self.sono_program_dict[v]["Part 1"].append(brother.title())
 					self.busy_bro_list.append(brother)
+					self.brothers_past_actions[brother]["micro"] += 1
 					# Remove bro from potential second part of the reunion
 					if brother in brothers_part_2_list:
 						brothers_part_2_list.remove(brother)
@@ -377,6 +417,7 @@ class Programmer():
 				for brother in brothers_part_2_list[:2]:
 					self.sono_program_dict[v]["Part 2"].append(brother.title())
 					self.busy_bro_list.append(brother)
+					self.brothers_past_actions[brother]["micro"] += 1
 		
 		print("\n####################################################################")
 		print("######################## Sono SCHEDULE INFO ########################")
@@ -454,6 +495,17 @@ class Programmer():
 				"/".join([self.sono_program_dict[date]["Part 2"][0], self.sono_program_dict[date]["Part 2"][1]]),
 				self.sono_program_dict[date]["Scène"]]
 				writer.writerow(tmp_data)
+
+		# Keep track of which brother did what how many times
+		with open(self.brothers_past_actions_file, "w") as csv_file:
+			writer = csv.writer(csv_file, delimiter=';')
+			header = ["Name", "Sono", "Micro", "Stage"]
+			writer.writerow(header)
+
+			for name in self.brothers_past_actions:
+				writer.writerow([name, self.brothers_past_actions[name]["sono"],
+								 self.brothers_past_actions[name]["micro"],
+								 self.brothers_past_actions[name]["stage"]])
 
 	def run(self):
 		"""
