@@ -3,7 +3,11 @@
    <body>
       <form action = "http://localhost:5000/submit" method = "POST" enctype = "multipart/form-data">
          <h1>Test run</h1>
-         <p>For testing purpose, select the following parameters / files :<br> &emsp;- month: Décembre<br> &emsp;- mid-week program: prog_vcm_test.pdf<br> &emsp;- week-end program: weekend_program_test.csv<br></p>
+         <p>For testing purpose, select the following parameters / files :
+            <br> &emsp;- month: Décembre<br> &emsp;- mid-week program: prog_vcm_test.pdf
+            <br> &emsp;- week-end program: weekend_program_test.csv<br>
+            <br> &emsp;- welcome program: welcome_program_test.csv<br>
+         </p>
          <p>#############################################################################</p>
          <h1>Program Parameters</h1>
          <p>Select a month. => 
@@ -16,6 +20,8 @@
          <input type = "file" name = "program_file" accept = .pdf /></p>
          <p>Select a week-end program file. =>
          <input type = "file" name = "program_file_2" accept = .csv /></p>
+         <p>Select a welcome program file. =>
+         <input type = "file" name = "welcome_program_file" accept = .csv /></p>
          <input type = "submit" name="submit_button" value = "Upload" />
          <p>#############################################################################</p>
       </form>

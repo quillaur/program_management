@@ -15,12 +15,18 @@ from datetime import datetime
 
 class Programmer():
 
-	def __init__(self, program_file: str, program_file_2: str, input_date: str):
+	def __init__(self, program_file: str, program_file_2: str, welcome_file: str, input_date: str):
 		""" 
 		Programmer init
 
 		:param program_file: PDF file path loaded by the user
 		:type program_file: str
+		:param program_file_2: week-end program file path
+		:type program_file_2: str
+		:param welcome_file: welcome program file path
+		:type welcome_file: str
+		:param input_date: month given as input by the user
+		:type input_date: str
 		"""
 		# get config
 		config = configparser.ConfigParser()
@@ -37,6 +43,7 @@ class Programmer():
 			# Input and output files
 			self.input_file = os.path.abspath(program_file)
 			self.input_file_2 = os.path.abspath(program_file_2)
+			self.welcome_file = os.path.abspath(welcome_file)
 			self.output_csv = os.path.join(dir_path, "sono_program.csv")
 
 			# Class variables
@@ -46,7 +53,7 @@ class Programmer():
 			
 			def open_file_make_list(filename):
 				with open(filename, "r") as my_csv:
-					results_list = [row[0] for row in csv.reader(my_csv)]
+					results_list = [unidecode(row[0]).lower() for row in csv.reader(my_csv)]
 
 				return results_list
 
@@ -58,12 +65,14 @@ class Programmer():
 			
 			self.brother_actions_dict = OrderedDict()
 			self.sono_program_dict = OrderedDict()
-			self.welcome_program_dict = OrderedDict()
+			# self.welcome_program_dict = OrderedDict()
 			self.month_str_to_int = {"janvier": "01", "fevrier": "02", "mars": "03", "avril": "04", "mai": "05", "juin": "06", "juillet": "07", "aout": "08", "septembre": "09", "octobre": "10", "novembre": "11", "decembre": "12"}
 
 			self.weekend_dates = []
-			self.weekends_bro = []
+			self.dates_list = []
+			self.weekends_bro = OrderedDict()
 			self.busy_bro_list = []
+			self.welcome_bro_schedule = OrderedDict()
 
 			self.wt_conductor = "Delapille"
 
@@ -123,6 +132,20 @@ class Programmer():
 		:rtype: list
 		"""
 		###########################################################################
+		######################### WELCOME PROGRAM INFO ############################
+		###########################################################################
+		with open(self.welcome_file, "r") as my_csv:
+			handle = csv.reader(my_csv, delimiter=',')
+			next(handle)
+
+			for row in handle:
+				date = str(row[0]).split("/") if "/" in row[0] else str(row[0]).split("-")
+				date = datetime(day=int(date[0]), month=int(date[1]), year=datetime.today().year).strftime('%d-%m-%Y')
+				self.dates_list.append(date)
+				self.welcome_bro_schedule[date] = [unidecode(row[1].lower()), unidecode(row[2].lower())]
+		print(self.welcome_bro_schedule)
+		print(self.brothers_list)
+		###########################################################################
 		######################## WEEK-END MEETINGS INFO ###########################
 		###########################################################################
 		with open(self.input_file_2, "r") as my_csv:
@@ -133,10 +156,8 @@ class Programmer():
 				date = str(row[0]).split("/") if "/" in row[0] else str(row[0]).split("-")
 				date = datetime(day=int(date[0]), month=int(date[1]), year=datetime.today().year).strftime('%d-%m-%Y')
 				self.weekend_dates.append(date)
-				self.weekends_bro.append(row[1:])
+				self.weekends_bro[date] = [unidecode(row[1].lower()), unidecode(row[2].lower()), unidecode(row[3].lower())]
 
-		print(self.weekend_dates)
-		print(self.weekends_bro)
 		###########################################################################
 		######################### WEEKLY MEETINGS INFO ############################
 		###########################################################################
@@ -146,7 +167,6 @@ class Programmer():
 
 		# Analyse text
 		for line in clean_pdf_text:
-
 			# Looking for a date
 			if part_1 is False:
 				
@@ -158,6 +178,7 @@ class Programmer():
 					try:
 						day = int(line.strip().split(" ")[0])
 					except ValueError:
+						print("No int found in: {}".format(line))
 						continue
 
 					date = [day, self.month_str_to_int[month.strip()], str(datetime.today().year)]
@@ -209,22 +230,27 @@ class Programmer():
 
 		:return: None
 		"""
-		# Order dates to do the sono program for
-		date_list = [x for x in self.brother_actions_dict.keys()]
-		ordered_dates = []
-		for dates in zip(self.weekend_dates, date_list):
-			ordered_dates.extend(dates)
-
-		# Add missing dates
-		if len(self.weekend_dates) > len(date_list):
-			for date in self.weekend_dates:
-				if date not in ordered_dates:
-					ordered_dates.append(date)
+		# Use dates from the welcome program, and if not then use all other available dates from other programs.
+		if self.dates_list:
+			ordered_dates = self.dates_list
 
 		else:
-			for date in date_list:
-				if date not in ordered_dates:
-					ordered_dates.append(date)
+			# Order dates to do the sono program for
+			date_list = [x for x in self.brother_actions_dict.keys()]
+			ordered_dates = []
+			for dates in zip(self.weekend_dates, date_list):
+				ordered_dates.extend(dates)
+
+			# Add missing dates
+			if len(self.weekend_dates) > len(date_list):
+				for date in self.weekend_dates:
+					if date not in ordered_dates:
+						ordered_dates.append(date)
+
+			else:
+				for date in date_list:
+					if date not in ordered_dates:
+						ordered_dates.append(date)
 
 		# Init program dict
 		for date in ordered_dates:
@@ -240,18 +266,46 @@ class Programmer():
 			# Week-end brother management
 			if v in self.weekend_dates:
 				# Keep available brothers
-				sono_list = [x for x in self.sono_list if x not in self.weekends_bro]
-				brothers_part_1_list = [x for x in self.brothers_list if x not in self.weekends_bro and self.wt_conductor not in x and x not in self.other_language_bro]
-				brothers_part_2_list = [x for x in self.brothers_list if x not in self.weekends_bro and self.wt_conductor not in x and x not in self.other_language_bro]
-				potential_stage_brothers = [x for x in self.brothers_list if x not in self.weekends_bro]
+				sono_list = [x for x in self.sono_list
+							 if x not in self.weekends_bro[v]
+							 and x not in self.welcome_bro_schedule[v]]
+
+				brothers_part_1_list = [x for x in self.brothers_list
+										if x not in self.weekends_bro
+										and self.wt_conductor not in x
+										and x not in self.other_language_bro
+										and x not in self.welcome_bro_schedule[v]]
+
+				brothers_part_2_list = [x for x in self.brothers_list
+										if x not in self.weekends_bro[v]
+										and self.wt_conductor not in x
+										and x not in self.other_language_bro
+										and x not in self.welcome_bro_schedule[v]]
+
+				potential_stage_brothers = [x for x in self.brothers_list
+											if x not in self.weekends_bro[v]
+											and x not in self.welcome_bro_schedule[v]]
 
 			# Mid-week brother management
 			else:
 				# Keep available brothers
-				sono_list = [x for x in self.sono_list if x not in self.brother_actions_dict[v]["Part_1"] and x not in self.brother_actions_dict[v]["Part_2"]]
-				brothers_part_1_list = [x for x in self.brothers_list if x not in self.brother_actions_dict[v]["Part_1"]]
-				brothers_part_2_list = [x for x in self.brothers_list if x not in self.brother_actions_dict[v]["Part_2"]]
-				potential_stage_brothers = [x for x in self.brothers_list if x not in self.brother_actions_dict[v]["Part_1"] and x not in self.brother_actions_dict[v]["Part_2"]]
+				sono_list = [x for x in self.sono_list
+							 if x not in self.brother_actions_dict[v]["Part_1"]
+							 and x not in self.brother_actions_dict[v]["Part_2"]
+							 and x not in self.welcome_bro_schedule[v]]
+
+				brothers_part_1_list = [x for x in self.brothers_list
+										if x not in self.brother_actions_dict[v]["Part_1"]
+										and x not in self.welcome_bro_schedule[v]]
+
+				brothers_part_2_list = [x for x in self.brothers_list
+										if x not in self.brother_actions_dict[v]["Part_2"]
+										and x not in self.welcome_bro_schedule[v]]
+
+				potential_stage_brothers = [x for x in self.brothers_list
+											if x not in self.brother_actions_dict[v]["Part_1"]
+											and x not in self.brother_actions_dict[v]["Part_2"]
+											and x not in self.welcome_bro_schedule[v]]
 
 			# randomize list
 			sono_list = sample(sono_list, len(sono_list))
@@ -265,17 +319,17 @@ class Programmer():
 				if i != 0: 
 					
 					if sono_list[0] not in self.sono_program_dict[ordered_dates[i-1]]["Sono"]:
-						self.sono_program_dict[v]["Sono"] = sono_list[0]
+						self.sono_program_dict[v]["Sono"] = sono_list[0].title()
 						self.busy_bro_list.append(sono_list[0])
 						del sono_list[0]
 					
 					else:
-						self.sono_program_dict[v]["Sono"] = sono_list[1]
+						self.sono_program_dict[v]["Sono"] = sono_list[1].title()
 						self.busy_bro_list.append(sono_list[1])
 						del sono_list[1]
 				
 				else:
-					self.sono_program_dict[v]["Sono"] = sono_list[0]
+					self.sono_program_dict[v]["Sono"] = sono_list[0].title()
 					self.busy_bro_list.append(sono_list[0])
 					del sono_list[0]
 
@@ -288,17 +342,17 @@ class Programmer():
 				if i != 0: 
 					
 					if sono_list[0] not in self.sono_program_dict[ordered_dates[i-1]]["Scène"]:
-						self.sono_program_dict[v]["Scène"] = sono_list[0]
+						self.sono_program_dict[v]["Scène"] = sono_list[0].title()
 						self.busy_bro_list.append(sono_list[0])
 						del sono_list[0]
 					
 					else:
-						self.sono_program_dict[v]["Scène"] = sono_list[1]
+						self.sono_program_dict[v]["Scène"] = sono_list[1].title()
 						self.busy_bro_list.append(sono_list[1])
 						del sono_list[1]
 				
 				else:
-					self.sono_program_dict[v]["Scène"] = sono_list[0]
+					self.sono_program_dict[v]["Scène"] = sono_list[0].title()
 					self.busy_bro_list.append(sono_list[0])
 					del sono_list[0]
 
@@ -311,7 +365,7 @@ class Programmer():
 			if len(brothers_part_1_list) > 1:
 
 				for brother in brothers_part_1_list[:2]:
-					self.sono_program_dict[v]["Part 1"].append(brother)
+					self.sono_program_dict[v]["Part 1"].append(brother.title())
 					self.busy_bro_list.append(brother)
 					# Remove bro from potential second part of the reunion
 					if brother in brothers_part_2_list:
@@ -321,7 +375,7 @@ class Programmer():
 			if len(brothers_part_2_list) > 1:
 
 				for brother in brothers_part_2_list[:2]:
-					self.sono_program_dict[v]["Part 2"].append(brother)
+					self.sono_program_dict[v]["Part 2"].append(brother.title())
 					self.busy_bro_list.append(brother)
 		
 		print("\n####################################################################")
@@ -333,55 +387,55 @@ class Programmer():
 			for key in self.sono_program_dict[date].keys():
 				print("{} : {}".format(key, self.sono_program_dict[date][key]))
 
-	def make_welcome_program(self):
-		"""
-		Create a program for the welcome team based on brother availability.
-
-		:return: None
-		"""
-		# Order dates to do the sono program for
-		date_list = [x for x in self.brother_actions_dict.keys()]
-		ordered_dates = []
-		for dates in zip(self.weekend_dates, date_list):
-			ordered_dates.extend(dates)
-
-		# Init program dict
-		for date in ordered_dates:
-			if date not in self.welcome_program_dict.keys():
-				self.welcome_program_dict[date] = []
-
-		for i, v in enumerate(ordered_dates):
-			# Week-end brother management
-			if v in self.weekend_dates:
-				# Keep available brothers
-				welcome_list = [x for x in self.welcome_list if x not in self.weekends_bro and x not in self.busy_bro_list]
-
-			# Mid-week brother management
-			else:
-				# Keep available brothers
-				welcome_list = [x for x in self.welcome_list if x not in self.brother_actions_dict[v]["Part_1"] and x not in self.brother_actions_dict[v]["Part_2"] and x not in self.busy_bro_list]
-
-			if len(welcome_list) > 0:
-				# Put the first bro of the list unless he already did the welcome role last time
-				if i != 0: 
-
-					if welcome_list[0] not in self.welcome_program_dict[ordered_dates[i-1]]:
-						self.welcome_program_dict[v] = welcome_list[0]
-						self.busy_bro_list.append(welcome_list[0])
-						del welcome_list[0]
-					
-					else:
-						self.welcome_program_dict[v] = welcome_list[1]
-						self.busy_bro_list.append(welcome_list[1])
-						del welcome_list[1]
-				
-				else:
-					self.welcome_program_dict[v] = welcome_list[0]
-					self.busy_bro_list.append(welcome_list[0])
-					del welcome_list[0]
-
-			else:
-				print("WARNING: no brother found for welcome for {}".format(v))
+	# def make_welcome_program(self):
+	# 	"""
+	# 	Create a program for the welcome team based on brother availability.
+	#
+	# 	:return: None
+	# 	"""
+	# 	# Order dates to do the sono program for
+	# 	date_list = [x for x in self.brother_actions_dict.keys()]
+	# 	ordered_dates = []
+	# 	for dates in zip(self.weekend_dates, date_list):
+	# 		ordered_dates.extend(dates)
+	#
+	# 	# Init program dict
+	# 	for date in ordered_dates:
+	# 		if date not in self.welcome_program_dict.keys():
+	# 			self.welcome_program_dict[date] = []
+	#
+	# 	for i, v in enumerate(ordered_dates):
+	# 		# Week-end brother management
+	# 		if v in self.weekend_dates:
+	# 			# Keep available brothers
+	# 			welcome_list = [x for x in self.welcome_list if x not in self.weekends_bro and x not in self.busy_bro_list]
+	#
+	# 		# Mid-week brother management
+	# 		else:
+	# 			# Keep available brothers
+	# 			welcome_list = [x for x in self.welcome_list if x not in self.brother_actions_dict[v]["Part_1"] and x not in self.brother_actions_dict[v]["Part_2"] and x not in self.busy_bro_list]
+	#
+	# 		if len(welcome_list) > 0:
+	# 			# Put the first bro of the list unless he already did the welcome role last time
+	# 			if i != 0:
+	#
+	# 				if welcome_list[0] not in self.welcome_program_dict[ordered_dates[i-1]]:
+	# 					self.welcome_program_dict[v] = welcome_list[0]
+	# 					self.busy_bro_list.append(welcome_list[0])
+	# 					del welcome_list[0]
+	#
+	# 				else:
+	# 					self.welcome_program_dict[v] = welcome_list[1]
+	# 					self.busy_bro_list.append(welcome_list[1])
+	# 					del welcome_list[1]
+	#
+	# 			else:
+	# 				self.welcome_program_dict[v] = welcome_list[0]
+	# 				self.busy_bro_list.append(welcome_list[0])
+	# 				del welcome_list[0]
+	#
+	# 		else:
+	# 			print("WARNING: no brother found for welcome for {}".format(v))
 
 	def print_to_csv(self):
 		"""
