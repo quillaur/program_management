@@ -327,6 +327,7 @@ class Programmer():
 			# List of tuples here
 			sono_list = sorted([(brother, self.brothers_past_actions[brother]["sono"]) for brother in sono_list],
 							   key=lambda tup: tup[1])
+
 			# Make it a list
 			sono_list = [tup[0] for tup in sono_list]
 

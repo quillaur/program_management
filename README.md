@@ -40,7 +40,5 @@ Go to http://localhost:5000/submit
 Insert the requested files and click the "upload" button.
 The result table should appear on your webpage.
 
-# TODO
-- Fix january 27th date with the january test case
-- Take into consideration welcome brothers
-- Add a counting system which will allow to better choose brother to use
+# TO DO
+- Fix count of brothers to include sono brothers in passing mikes.
