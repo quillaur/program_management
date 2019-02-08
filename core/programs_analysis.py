@@ -44,7 +44,11 @@ class Programmer():
 			self.input_file_2 = os.path.abspath(program_file_2)
 			self.welcome_file = os.path.abspath(welcome_file)
 			self.output_csv = os.path.join(dir_path, "sono_program.csv")
-			self.brothers_past_actions_file = os.path.join(self.config["FILES"]["BROTHER_PATH"], self.config["FILES"]["PAST_ACTIONS"])
+			# If test mode, write into a test CSV file
+			self.brothers_past_actions_file = os.path.join(self.config["FILES"]["BROTHER_PATH"],
+														   self.config["FILES"]["PAST_ACTIONS"]) \
+				if "test" not in program_file \
+				else os.path.join(self.config["FILES"]["BROTHER_PATH"], "test_" + self.config["FILES"]["PAST_ACTIONS"])
 
 			# Class variables
 			self.months_list = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", 
@@ -53,7 +57,7 @@ class Programmer():
 			
 			def open_file_make_list(filename):
 				with open(filename, "r") as my_csv:
-					results_list = [unidecode(row[0]).lower() for row in csv.reader(my_csv)]
+					results_list = [unidecode(row[0]).lower() for row in csv.reader(my_csv, delimiter=";")]
 
 				return results_list
 
@@ -81,7 +85,6 @@ class Programmer():
 
 			self.brother_actions_dict = OrderedDict()
 			self.sono_program_dict = OrderedDict()
-			# self.welcome_program_dict = OrderedDict()
 			self.month_str_to_int = {"janvier": "01", "fevrier": "02", "mars": "03", "avril": "04", "mai": "05", "juin": "06", "juillet": "07", "aout": "08", "septembre": "09", "octobre": "10", "novembre": "11", "decembre": "12"}
 
 			self.weekend_dates = []
@@ -130,7 +133,7 @@ class Programmer():
 		######################### WELCOME PROGRAM INFO ############################
 		###########################################################################
 		with open(self.welcome_file, "r") as my_csv:
-			handle = csv.reader(my_csv, delimiter=',')
+			handle = csv.reader(my_csv, delimiter=';')
 			next(handle)
 
 			for row in handle:
@@ -143,7 +146,7 @@ class Programmer():
 		######################## WEEK-END MEETINGS INFO ###########################
 		###########################################################################
 		with open(self.input_file_2, "r") as my_csv:
-			handle = csv.reader(my_csv, delimiter=',')
+			handle = csv.reader(my_csv, delimiter=';')
 			next(handle)
 
 			for row in handle:
