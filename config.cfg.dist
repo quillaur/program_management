@@ -5,3 +5,4 @@ SONO_BROS: sono_brothers.csv
 WELCOME_BROS: welcome_brothers.csv
 CHINESE_BROS: chinese_brothers.csv
 PAST_ACTIONS: brothers_past_actions.csv
+RESULTS_FILE: sono_program.csv

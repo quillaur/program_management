@@ -112,7 +112,7 @@ def upload():
             return render_template("upload.html")
 
         dir_path = os.path.dirname(os.path.realpath(__file__))
-        absolute_file = os.path.join(dir_path, "resources", "results_content.txt")
+        absolute_file = os.path.join(dir_path, "resources/temporary", "results_content.txt")
 
         with open(absolute_file, "w") as my_txt:
             my_txt.write(str(col_names))
