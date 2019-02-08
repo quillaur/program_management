@@ -36,14 +36,14 @@ class Programmer():
 		if os.path.isfile(config_file_path):
 			self.config.read(config_file_path)
 		else:
-			print("Could not find config file !\n{}".format(config_file_path))
+			print("WARNING: Could not find config file !\n{}".format(config_file_path))
 
 		if program_file is not None:
 			# Input and output files
 			self.input_file = os.path.abspath(program_file)
 			self.input_file_2 = os.path.abspath(program_file_2)
 			self.welcome_file = os.path.abspath(welcome_file)
-			self.output_csv = os.path.join(dir_path, "sono_program.csv")
+			self.output_csv = os.path.join(dir_path, "results", self.config["FILES"]["RESULTS_FILE"])
 			# If test mode, write into a test CSV file
 			self.brothers_past_actions_file = os.path.join(self.config["FILES"]["BROTHER_PATH"],
 														   self.config["FILES"]["PAST_ACTIONS"]) \

@@ -35,6 +35,15 @@ Install the project python module requirements
 pip3 install -r requirements.txt
 ```
 
+## Create your config
+Open the "config.cfg.dist" file into your favorite text 
+editor and change the "BROTHER_PATH" key so that path 
+corresponds to where you deployed 
+the "program_management" project.
+
+Once done, save it as "config.cfg" in your 
+"program_management" directory.
+
 ## Program execution
 ```shell
 python3 flask_visualisation.py
