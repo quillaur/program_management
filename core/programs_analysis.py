@@ -1,14 +1,13 @@
 #!/usr/bin/env python
 # Contact: aurelienquillet@gmail.com
 # Date: 28/10/2018
-# Purpose: Automatically generating programs for sono team and welcome center
+# Purpose: Automatically generating programs for sono team
 
 import configparser
 import os
 import PyPDF2
 from unidecode import unidecode
 from collections import OrderedDict
-from random import sample
 import csv
 from datetime import datetime
 
@@ -92,27 +91,6 @@ class Programmer():
 			self.welcome_bro_schedule = OrderedDict()
 
 			self.wt_conductor = "Delapille"
-
-	# def insert_DB(self, date, name, part):
-	# 	"""
-	# 	Insert date and names of meeting actors.
-	#
-	# 	:param date: date of the meeting
-	# 	:type date: date
-	#
-	# 	:param name: actor during this meeting
-	# 	:type name: str
-	#
-	# 	:param part: part of the meeting during which the actor acts
-	# 	:type part: str
-	#
-	# 	:return: None
-	# 	"""
-	# 	data_dict = {"DATE": date, "NAME": name, "PART": part}
-	# 	query = "INSERT INTO date_actors (date, name, part) VALUES (%(DATE)s, %(NAME)s, %(PART)s);"
-	#
-	# 	self.cur.execute(query, data_dict)
-	# 	self.mydb.commit()
 
 	def extract_text_from_pdf_file(self, filename: str):
 		"""
@@ -429,56 +407,6 @@ class Programmer():
 			for key in self.sono_program_dict[date].keys():
 				print("{} : {}".format(key, self.sono_program_dict[date][key]))
 
-	# def make_welcome_program(self):
-	# 	"""
-	# 	Create a program for the welcome team based on brother availability.
-	#
-	# 	:return: None
-	# 	"""
-	# 	# Order dates to do the sono program for
-	# 	date_list = [x for x in self.brother_actions_dict.keys()]
-	# 	ordered_dates = []
-	# 	for dates in zip(self.weekend_dates, date_list):
-	# 		ordered_dates.extend(dates)
-	#
-	# 	# Init program dict
-	# 	for date in ordered_dates:
-	# 		if date not in self.welcome_program_dict.keys():
-	# 			self.welcome_program_dict[date] = []
-	#
-	# 	for i, v in enumerate(ordered_dates):
-	# 		# Week-end brother management
-	# 		if v in self.weekend_dates:
-	# 			# Keep available brothers
-	# 			welcome_list = [x for x in self.welcome_list if x not in self.weekends_bro and x not in self.busy_bro_list]
-	#
-	# 		# Mid-week brother management
-	# 		else:
-	# 			# Keep available brothers
-	# 			welcome_list = [x for x in self.welcome_list if x not in self.brother_actions_dict[v]["Part_1"] and x not in self.brother_actions_dict[v]["Part_2"] and x not in self.busy_bro_list]
-	#
-	# 		if len(welcome_list) > 0:
-	# 			# Put the first bro of the list unless he already did the welcome role last time
-	# 			if i != 0:
-	#
-	# 				if welcome_list[0] not in self.welcome_program_dict[ordered_dates[i-1]]:
-	# 					self.welcome_program_dict[v] = welcome_list[0]
-	# 					self.busy_bro_list.append(welcome_list[0])
-	# 					del welcome_list[0]
-	#
-	# 				else:
-	# 					self.welcome_program_dict[v] = welcome_list[1]
-	# 					self.busy_bro_list.append(welcome_list[1])
-	# 					del welcome_list[1]
-	#
-	# 			else:
-	# 				self.welcome_program_dict[v] = welcome_list[0]
-	# 				self.busy_bro_list.append(welcome_list[0])
-	# 				del welcome_list[0]
-	#
-	# 		else:
-	# 			print("WARNING: no brother found for welcome for {}".format(v))
-
 	def print_to_csv(self):
 		"""
 		Print sono program to CSV file.
@@ -497,7 +425,7 @@ class Programmer():
 				self.sono_program_dict[date]["Scène"]]
 				writer.writerow(tmp_data)
 
-		# Keep track of which brother did what how many times
+		# Keep track of which brother did what and how many times
 		with open(self.brothers_past_actions_file, "w") as csv_file:
 			writer = csv.writer(csv_file, delimiter=';')
 			header = ["Name", "Sono", "Micro", "Stage"]

@@ -1,5 +1,9 @@
 # program_management
 Manage programs for the different meetings of my assembly of Jehovah's witnesses.
+The goal is to take the following programs to then build the sono team program according to brothers availibility:
+- Week-end program (CSV)
+- Mid-week program (PDF)
+- Welcome program (CSV)
 
 ## Project deployment
 Install git if you do not already have it.
@@ -39,6 +43,3 @@ python3 flask_visualisation.py
 Go to http://localhost:5000/submit
 Insert the requested files and click the "upload" button.
 The result table should appear on your webpage.
-
-# TO DO
-- Fix count of brothers to include sono brothers in passing mikes.

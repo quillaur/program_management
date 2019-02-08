@@ -13,7 +13,7 @@ app = Flask(__name__)
 
 def generate_program(program_file, program_file_2, welcome_file, input_date):
     """
-    Generate program for sono from filename
+    Use the class Programmer to generate program from input files. Saves the used files to the desired directory.
 
     :param program_file: class object containing the content of the PDF file
     :type program_file: <class 'werkzeug.datastructures.FileStorage'>
@@ -46,7 +46,6 @@ def generate_program(program_file, program_file_2, welcome_file, input_date):
     return sono_program_dict
 
 
-# Declare your table
 def format_dict_to_table(program_dict: dict, mode: str):
     """
     Format the program dictionary so as to be printed as HTML table
@@ -107,12 +106,6 @@ def upload():
             items = format_dict_to_table(sono_program_dict, "sono")
             col_names = [key for key in items[0].keys()]
             contents = [[v for k, v in item.items()] for item in items]
-
-        # Formatting welcome program for HTML
-        # print("welcome dict: {}".format(welcome_program_dict))
-        # items = format_dict_to_table(welcome_program_dict, "welcome")
-        # welcome_col_names = [key for key in items[0].keys()]
-        # welcome_contents = [[v for k,v in item.items()] for item in items]
 
         elif request.form["submit_button"] == "Generate new program":
 
