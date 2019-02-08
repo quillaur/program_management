@@ -52,3 +52,14 @@ python3 flask_visualisation.py
 Go to http://localhost:5000/submit
 Insert the requested files and click the "upload" button.
 The result table should appear on your webpage.
+
+## Working on the project
+Please pull your own branch from the master one:
+```shell
+git checkout -b feat/name-of-your-branch
+git push -u origin feat/name-of-your-branch
+```
+Before merging into master, please let me review your pull request.
+Thanks a lot ! 
+
+Aurélien Quillet.
