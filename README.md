@@ -53,6 +53,11 @@ Go to http://localhost:5000/submit
 Insert the requested files and click the "upload" button.
 The result table should appear on your webpage.
 
+## To do list
+- Create database and fill it with all brother data.
+- Select required data for doing the program.
+- Improve design of home page.
+
 ## Working on the project
 Please pull your own branch from the master one:
 ```shell
