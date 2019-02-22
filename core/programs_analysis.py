@@ -47,7 +47,7 @@ class Programmer():
 			# If test mode, write into a test CSV file
 			self.brothers_past_actions_file = os.path.join(self.config["FILES"]["BROTHER_PATH"],
 														   self.config["FILES"]["PAST_ACTIONS"]) \
-				if "test" not in program_file \
+				if "test.csv" not in program_file \
 				else os.path.join(self.config["FILES"]["BROTHER_PATH"], "test_" + self.config["FILES"]["PAST_ACTIONS"])
 
 			# Class variables
