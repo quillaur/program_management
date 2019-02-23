@@ -324,11 +324,12 @@ class Programmer():
 
 			potential_stage_brothers = sorted([(brother, self.brothers_past_actions[brother]["stage"])
 									for brother in potential_stage_brothers], key=lambda tup: tup[1])
+			print(potential_stage_brothers)
 			# Make it a list
 			potential_stage_brothers = [tup[0] for tup in potential_stage_brothers]
 
 			# Looking for sono brother first
-			if len(sono_list) > 0:
+			if sono_list:
 				# Put the first bro of the list unless he already did sono last time
 				if i != 0: 
 					
@@ -354,7 +355,12 @@ class Programmer():
 				print("WARNING: no brother found for sono for {}".format(v))
 
 			# Looking for stage bro, first looking through sono team
-			if len(sono_list) > 0:
+			if sono_list:
+				# Reorder brother of sono according to how many times they did stage
+				sono_list = sorted([(brother, self.brothers_past_actions[brother]["stage"]) for brother in sono_list],
+								   key=lambda tup: tup[1])
+				# Make it a list
+				sono_list = [tup[0] for tup in sono_list]
 				# Put the first bro of the list unless he already did stage last time
 				if i != 0: 
 					
