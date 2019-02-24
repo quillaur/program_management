@@ -54,6 +54,8 @@ Insert the requested files and click the "upload" button.
 The result table should appear on your webpage.
 
 ## To do list
+- Hermann cannot be during micro during w-e.
+- Check so chinese bros don't do micro during w-e.
 - Create database and fill it with all brother data.
 - Select required data for doing the program.
 - Improve design of home page.
