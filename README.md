@@ -17,10 +17,10 @@ git clone https://github.com/quillaur/program_management.git
 ```
 
 ## Database installation
-Install mariaDB if you do not have it already.
+Install mysql if you do not have it already.
 ```shell
-sudo apt install mariadb-client-core-10.1
-sudo apt install mariadb-server
+sudo apt install mysql-server
+sudo systemctl status mysql
 ```
 
 Import SQL scheme
