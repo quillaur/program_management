@@ -93,7 +93,7 @@ class Programmer():
 			self.busy_bro_list = []
 			self.welcome_bro_schedule = OrderedDict()
 
-			self.wt_conductor = "Delapille"
+			self.wt_conductor = "delapille"
 
 	def extract_text_from_pdf_file(self, filename: str):
 		"""
@@ -324,7 +324,7 @@ class Programmer():
 
 			potential_stage_brothers = sorted([(brother, self.brothers_past_actions[brother]["stage"])
 									for brother in potential_stage_brothers], key=lambda tup: tup[1])
-			print(potential_stage_brothers)
+
 			# Make it a list
 			potential_stage_brothers = [tup[0] for tup in potential_stage_brothers]
 
