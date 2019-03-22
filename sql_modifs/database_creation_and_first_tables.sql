@@ -19,5 +19,6 @@ CREATE TABLE IF NOT EXISTS BrotherAction(
 	ActionDate DATE,
 	IdAction TINYINT UNSIGNED,
 	foreign key (IdBrother) references Brother (IdBrother),
-	foreign key (IdAction) references Action (IdAction)
+	foreign key (IdAction) references Action (IdAction),
+	PRIMARY KEY (IdBrotherAction)
 );
