@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Update</title>
+</head>
+<body>
+    <form action = "http://localhost:5000/update" method = "POST" enctype = "multipart/form-data">
+    <h1>Update Brother Action table</h1>
+
+    <p>Brother:
+     <select name = "brother">
+        {% for each in dropdown_brothers_list %}
+           <option value="{{each}}">{{each}}</option>
+        {% endfor %}
+     </select>
+
+        Action:
+     <select name = "action">
+        {% for each in dropdown_actions_list %}
+           <option value="{{each}}">{{each}}</option>
+        {% endfor %}
+     </select>
+
+        Date:
+        <input type="date" name="action_date">
+    <input type = "submit" name="submit_button" value = "Update" /></p>
+    </form>
+
+    {% for table in tables %}
+        {{ table|safe }}
+    {% endfor %}
+</body>
+</html>

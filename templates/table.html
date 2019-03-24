@@ -4,25 +4,9 @@
 		
 		<table>
 			<link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet" type="text/css" />
-			<col>
- 			<colgroup span="5"></colgroup>
- 			<tr style="text-align: center; vertical-align: middle; color: #006699; font-size: 200%; border-bottom: solid 0.25em black;">
-				<th colspan="5" scope="colgroup"><p>Programme Micros/Scène<br/>{{ month }} 2019</p></th>
-			</tr>
-			<tr style="text-align: center; vertical-align: middle; color: #006699; font-size: 130%;">
-			{% for key in keys %}
-				<th scope="col">{{ key }}</th>
+			{% for table in tables %}
+				{{ table|safe }}
 			{% endfor %}
-			</tr>
-			<tbody>
-			{% for values in values_list %}
-				<tr>
-				{% for value in values %}	
-					<td style="text-align: center; vertical-align: middle;">{{ value }}</td>
-				{% endfor %}
-				</tr>
-			{% endfor %}
-			</tbody>
 		</table>
 
 		<p><font size="5">This Program was saved at the following address: program_management/sono_program.csv</p>
