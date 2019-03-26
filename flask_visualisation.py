@@ -200,7 +200,8 @@ def update_brother_action(action_date):
     connection = mysql.connector.connect(host="localhost", database="program_management", user="root",
                                          password="DPh8@v4%")
     cursor = connection.cursor()
-    query = "SELECT BrotherFirstName, BrotherLastName FROM Brother;"
+    query = "SELECT BrotherFirstName, BrotherLastName FROM Brother " \
+            "WHERE IdBrother NOT IN (SELECT IdBrother FROM BrotherAction WHERE ActionDate = '{}');".format(action_date)
     cursor.execute(query)
     brothers_list = ["{} {}".format(row[0], row[1]) for row in cursor]
 
@@ -244,23 +245,28 @@ def update_brother_action(action_date):
             cursor.execute(query, insert_dict)
             connection.commit()
 
+            query = "SELECT BrotherFirstName, BrotherLastName FROM Brother " \
+                    "WHERE IdBrother NOT IN (SELECT IdBrother FROM BrotherAction WHERE ActionDate = '{}');".format(
+                action_date)
+            cursor.execute(query)
+            brothers_list = ["{} {}".format(row[0], row[1]) for row in cursor]
+
             return_df = select_brother_action_table(date=action_date)
 
             return render_template("update.html", dropdown_brothers_list=brothers_list,
                                    dropdown_actions_list=actions_list,
-                                   tables=[return_df.to_html(classes='data', header="true")])
+                                   tables=[return_df.to_html(classes='data', header="true")],
+                                   action_date=action_date)
 
         elif "submit_date" in request.form:
             action_date = request.form["action_date"]
-            return_df = select_brother_action_table(date=action_date)
 
-            return render_template("update.html", dropdown_brothers_list=brothers_list,
-                                   dropdown_actions_list=actions_list,
-                                   tables=[return_df.to_html(classes='data', header="true")])
+            return redirect(url_for("update_brother_action", action_date=action_date))
 
     return render_template("update.html", dropdown_brothers_list=brothers_list,
                            dropdown_actions_list=actions_list,
-                           tables=[return_df.to_html(classes='data', header="true")])
+                           tables=[return_df.to_html(classes='data', header="true")],
+                           action_date=action_date)
 
 
 if __name__ == '__main__':

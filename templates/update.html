@@ -5,22 +5,23 @@
     <title>Update</title>
 </head>
 <body>
-    <form action = "http://localhost:5000/update/<action_date>" method = "POST" enctype = "multipart/form-data">
+    <form action = "http://localhost:5000/update/{{ action_date }}" method = "POST" enctype = "multipart/form-data">
     <h1>Brother actions</h1>
 
-    <p>Brother:
+    <p>Action:
+     <select name = "action">
+        {% for each in dropdown_actions_list %}
+           <option value="{{each}}">{{each}}</option>
+        {% endfor %}
+     </select>
+
+        Brother:
      <select name = "brother">
         {% for each in dropdown_brothers_list %}
            <option value="{{each}}">{{each}}</option>
         {% endfor %}
      </select>
 
-        Action:
-     <select name = "action">
-        {% for each in dropdown_actions_list %}
-           <option value="{{each}}">{{each}}</option>
-        {% endfor %}
-     </select>
     <input type = "submit" name="submit_action" value = "Submit" /></p>
     </form>
 
