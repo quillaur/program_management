@@ -1,6 +1,5 @@
-from flask import Flask, render_template, request, Response, url_for
+from flask import Flask, render_template, request, Response, url_for, redirect
 import os
-from collections import OrderedDict
 import sys
 import mysql.connector
 import pandas
@@ -10,123 +9,24 @@ from random import shuffle
 # My specific imports
 dir_path = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(os.path.join(dir_path, "core"))
-from programs_analysis import Programmer
 
 app = Flask(__name__)
 
 
-def generate_program(program_file, program_file_2, welcome_file, input_date):
-    """
-    Use the class Programmer to generate program from input files. Saves the used files to the desired directory.
-
-    :param program_file: class object containing the content of the PDF file
-    :type program_file: <class 'werkzeug.datastructures.FileStorage'>
-
-    :param program_file_2: class object containing the content of the CSV file
-    :type program_file: <class 'werkzeug.datastructures.FileStorage'>
-
-    :param welcome_file: class object containing the content of the CSV file
-    :type welcome_file: <class 'werkzeug.datastructures.FileStorage'>
-
-    :param input_date: month given as input by the user
-    :type input_date: str
-
-    :return: dictionary containing the program
-    :rtype: dict
-    """
-    dir_path = os.path.dirname(os.path.realpath(__file__))
-
-    absolute_program_file = os.path.join(dir_path, "resources/already_tested_programs", program_file.filename)
-    absolute_program_file_2 = os.path.join(dir_path, "resources/already_tested_programs", program_file_2.filename)
-    absolute_program_file_3 = os.path.join(dir_path, "resources/already_tested_programs", welcome_file.filename)
-
-    program_file.save(absolute_program_file)
-    program_file_2.save(absolute_program_file_2)
-    welcome_file.save(absolute_program_file_3)
-
-    programmer = Programmer(absolute_program_file, absolute_program_file_2, absolute_program_file_3, input_date)
-    sono_program_dict = programmer.run()
-
-    return sono_program_dict
-
-
-def format_dict_to_table(program_dict: dict, mode: str):
-    """
-    Format the program dictionary so as to be printed as HTML table
-
-    :param program_dict: dictionary containing the program
-    :type program_dict: dict
-
-    :param mode: which dictionary type am I formatting?
-    :type mode: str
-
-    :return: list of html items
-    :rtype: list
-    """
-    if mode == "sono":
-        # Intermediate formating of sono dict to be able to print it as a table
-        items = []
-        for key in program_dict.keys():
-            data_dict = OrderedDict()
-            data_dict["Date"] = key
-            data_dict["Sono"] = program_dict[key]["Sono"]
-            data_dict["Part 1"] = "/".join([program_dict[key]["Part 1"][0], program_dict[key]["Part 1"][1]])
-            data_dict["Part 2"] = "/".join([program_dict[key]["Part 2"][0], program_dict[key]["Part 2"][1]])
-            data_dict["Scène"] = program_dict[key]["Scène"]
-            items.append(data_dict)
-
-    elif mode == "welcome":
-        # Intermediate formating of welcome dict to be able to print it as a table
-        items = []
-        for key in program_dict.keys():
-            data_dict = OrderedDict()
-            data_dict["Date"] = key
-            data_dict["Welcome center"] = program_dict[key]
-            items.append(data_dict)
-
-    return items
-
-
 @app.route('/main_page', methods=["GET", "POST"])
 def main_page():
+    if request.method == "POST":
+        if request.form["submit_button"] == "Submit":
+            action_date = request.form["action_date"]
+
+            return redirect(url_for("update_brother_action", action_date=action_date))
+
     return render_template("main_page.html")
 
 
-@app.route('/submit', methods=["GET", "POST"])
+@app.route('/upload', methods=["GET", "POST"])
 def upload():
     if request.method == "POST":
-        # if request.form["submit_button"] == "Upload_2":
-        #     name = request.form['name']
-        #     date = request.form['date']
-        #     part = request.form['part']
-        #     msg = "I inserted: date: {} / name: {}".format(date, name)
-        #     pgr = Programmer()
-        #     pgr.insert_DB(date, name, part)
-        #     return msg
-        #
-        # elif request.form["submit_button"] == "Upload":
-        #     input_date = request.form['month']
-        #     program_file = request.files["program_file"]
-        #     program_file_2 = request.files["program_file_2"]
-        #     welcome_file = request.files["welcome_program_file"]
-        #     sono_program_dict = generate_program(program_file, program_file_2, welcome_file, input_date)
-        #
-        #     # Formatting sono program for HTML
-        #     items = format_dict_to_table(sono_program_dict, "sono")
-        #     col_names = [key for key in items[0].keys()]
-        #     contents = [[v for k, v in item.items()] for item in items]
-        #
-        # elif request.form["submit_button"] == "Generate new program":
-        #
-        #     return render_template("upload.html")
-        #
-        # dir_path = os.path.dirname(os.path.realpath(__file__))
-        # absolute_file = os.path.join(dir_path, "resources/temporary", "results_content.txt")
-        #
-        # with open(absolute_file, "w") as my_txt:
-        #     my_txt.write(str(col_names))
-        #     my_txt.write("\n")
-        #     my_txt.write(str(contents))
         if request.form["submit_button"] == "Upload":
             input_month = request.form['month'].lower()
             month_str_to_int = {"janvier": "01", "fevrier": "02", "mars": "03", "avril": "04", "mai": "05",
@@ -295,8 +195,8 @@ def select_brother_action_table(date: str = ""):
     return pandas.DataFrame(brother_action_dict)
 
 
-@app.route('/update', methods=["GET", "POST"])
-def update_brother_action():
+@app.route('/update/<action_date>', methods=["GET", "POST"])
+def update_brother_action(action_date):
     connection = mysql.connector.connect(host="localhost", database="program_management", user="root",
                                          password="DPh8@v4%")
     cursor = connection.cursor()
@@ -308,13 +208,12 @@ def update_brother_action():
     cursor.execute(query)
     actions_list = [row[0] for row in cursor]
 
-    return_df = select_brother_action_table()
+    return_df = select_brother_action_table(date=action_date)
 
     if request.method == "POST":
-        if request.form["submit_button"] == "Update":
+        if "submit_action" in request.form:
             input_brother = request.form["brother"]
             input_action = request.form["action"]
-            action_date = request.form["action_date"]
 
             brother_name = input_brother.split(" ")
             if len(brother_name) > 2:
@@ -351,6 +250,14 @@ def update_brother_action():
                                    dropdown_actions_list=actions_list,
                                    tables=[return_df.to_html(classes='data', header="true")])
 
+        elif "submit_date" in request.form:
+            action_date = request.form["action_date"]
+            return_df = select_brother_action_table(date=action_date)
+
+            return render_template("update.html", dropdown_brothers_list=brothers_list,
+                                   dropdown_actions_list=actions_list,
+                                   tables=[return_df.to_html(classes='data', header="true")])
+
     return render_template("update.html", dropdown_brothers_list=brothers_list,
                            dropdown_actions_list=actions_list,
                            tables=[return_df.to_html(classes='data', header="true")])
@@ -359,4 +266,4 @@ def update_brother_action():
 if __name__ == '__main__':
     app.run(debug=True)
 
-# Connect via : http://localhost:5000/submit
+# Connect via : http://localhost:5000/main_page
