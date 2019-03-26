@@ -16,6 +16,18 @@ Clone the project repository.
 git clone https://github.com/quillaur/program_management.git
 ```
 
+## Database installation
+Install mysql if you do not have it already.
+```shell
+sudo apt install mysql-server
+sudo systemctl status mysql
+```
+
+Import SQL scheme
+```shell
+
+```
+
 ## Virtualenv creation
 Install virtualenv if you do not already have it. 
 ```shell
@@ -54,7 +66,7 @@ Insert the requested files and click the "upload" button.
 The result table should appear on your webpage.
 
 ## To do list
-- Hermann cannot be during micro during w-e.
+- Review how to properly launch mariadDB..
 - Check so chinese bros don't do micro during w-e.
 - Create database and fill it with all brother data.
 - Select required data for doing the program.

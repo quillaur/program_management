@@ -1,5 +1,5 @@
-# Logs and databases #
-######################
 *.log
-*.sql
-*.sqlite
+*.cfg
+*.csv
+resources/*
+programs/*
