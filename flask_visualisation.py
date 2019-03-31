@@ -365,3 +365,7 @@ if __name__ == '__main__':
     app.run(debug=True)
 
 # Connect via : http://localhost:5000/main_page
+# TO DO
+# Insert sono program in mysql
+# Extract function from this script to another
+# Comment better all functions.
