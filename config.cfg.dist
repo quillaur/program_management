@@ -1,8 +1,5 @@
-[FILES]
-BROTHER_PATH: ../program_management/resources/brother_roles/
-MICRO_BROS: micro_brothers.csv
-SONO_BROS: sono_brothers.csv
-WELCOME_BROS: welcome_brothers.csv
-CHINESE_BROS: chinese_brothers.csv
-PAST_ACTIONS: brothers_past_actions.csv
-RESULTS_FILE: sono_program.csv
+[DB]
+HOST:
+DATABASE:
+USER:
+PASSWORD:
