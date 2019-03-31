@@ -9,6 +9,15 @@
         <p>For which date would you like to see the schedule ?</p>
         <input type="date" name="action_date">
         <input type = "submit" name="submit_button" value = "Submit" /></p>
+
+        <p>Select a month. =>
+        <select name = "month">
+            {% for each in dropdown_months_list %}
+                <option value="{{each}}">{{each}}</option>
+            {% endfor %}
+        </select>
+        <input type = "submit" name="submit_button" value = "Generate" /></p>
+
     </form>
 </body>
 </html>

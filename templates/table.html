@@ -9,13 +9,33 @@
 			{% endfor %}
 		</table>
 
-		<p><font size="5">This Program was saved at the following address: program_management/sono_program.csv</p>
-		<p><font size="5">If you are satisfied with this program, you can <a href="http://localhost:5000/submit">return to the main page</a>.</p>
+		<form action = "http://localhost:5000/generate-sono-program/{{ action_date }}" method = "POST" enctype = "multipart/form-data">
+		<h3>Change brother action</h3>
 
-		<form action = "http://localhost:5000/submit" method = "POST" enctype="multipart/form-data">
-			<p><font size="4">If you are not satisfied with this program, please click on the following button: </font>
-			<input type = "submit" name="submit_button" value = "Generate new program" /></p>
+		<p>Action to change:
+			 <select name = "action">
+				{% for each in dropdown_actions_list %}
+				   <option value="{{each}}">{{each}}</option>
+				{% endfor %}
+			 </select>
+			<input type="date" name="action_date">
+		</p>
+
+		<p>Initial Brother:
+			 <select name = "init_brother">
+				{% for each in dropdown_brothers_list %}
+				   <option value="{{each}}">{{each}}</option>
+				{% endfor %}
+			 </select>
+
+			New Brother:
+			 <select name = "new_brother">
+				{% for each in dropdown_brothers_list %}
+				   <option value="{{each}}">{{each}}</option>
+				{% endfor %}
+			 </select>
+			<input type = "submit" name="submit_action" value = "Submit" />
+		</p>
 		</form>
-	
 	</body>
 </html>

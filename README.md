@@ -1,9 +1,12 @@
 # program_management
 Manage programs for the different meetings of my assembly of Jehovah's witnesses.
 The goal is to take the following programs to then build the sono team program according to brothers availibility:
-- Week-end program (CSV)
-- Mid-week program (PDF)
-- Welcome program (CSV)
+- Week-end program 
+- Mid-week program 
+- Welcome program 
+
+## WARNING !
+This README is not up to date anymore !!!
 
 ## Project deployment
 Install git if you do not already have it.
@@ -61,16 +64,14 @@ Once done, save it as "config.cfg" in your
 python3 flask_visualisation.py
 ```
 
-Go to http://localhost:5000/submit
+Go to http://localhost:5000/main_page
 Insert the requested files and click the "upload" button.
 The result table should appear on your webpage.
 
 ## To do list
-- Review how to properly launch mariadDB..
-- Check so chinese bros don't do micro during w-e.
-- Create database and fill it with all brother data.
-- Select required data for doing the program.
-- Improve design of home page.
+- Implement config parameters
+- Change readme to match the new architecture of the algo
+
 
 ## Working on the project
 Please pull your own branch from the master one:
