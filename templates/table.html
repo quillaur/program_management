@@ -19,8 +19,11 @@
 				{% endfor %}
 			 </select>
 			<input type="date" name="action_date">
+			<input type = "submit" name="submit_action" value = "Select" />
 		</p>
+		</form>
 
+		<form action = "http://localhost:5000/generate-sono-program/<action_date>" method = "POST" enctype = "multipart/form-data">
 		<p>Initial Brother:
 			 <select name = "init_brother">
 				{% for each in dropdown_brothers_list %}
@@ -34,7 +37,7 @@
 				   <option value="{{each}}">{{each}}</option>
 				{% endfor %}
 			 </select>
-			<input type = "submit" name="submit_action" value = "Submit" />
+			<input type = "submit" name="submit_brothers" value = "Submit" />
 		</p>
 		</form>
 	</body>

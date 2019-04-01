@@ -44,7 +44,7 @@ def generate_sono_program(action_date):
             init_first_name, init_last_name = split_brother_name(brother_full_name=input_init_brother)
             new_first_name, new_last_name = split_brother_name(brother_full_name=input_new_brother)
 
-            # Get tech dict from tmp_data and mofidy it
+            # Get tech dict from tmp_data and modify it
             current_dir = os.path.dirname(os.path.realpath(__file__))
             filename = os.path.join(current_dir, "tmp_data/tmp_tech_dict.txt")
 
@@ -71,6 +71,9 @@ def generate_sono_program(action_date):
                                    dropdown_actions_list=actions_list,
                                    tables=[return_df.to_html(classes='data', header="true")],
                                    action_date=action_date)
+
+        if "submit_brothers" in request.form:
+            """To continue here... the idea is to first get the date and action to decide which bro can go there. """
 
     input_month = action_date.lower()
     month_str_to_int = {
