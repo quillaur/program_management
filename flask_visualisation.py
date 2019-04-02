@@ -63,8 +63,25 @@ def generate_sono_program(action_date):
             # Select brothers only available at this date and able to do the wanted action
             brothers_list = generate_brother_list(date=action_date, action=input_action)
 
+            # Get brothers busy that day
+            date_indice = tech_dict["Date"].index(action_date)
+            if input_action == "Part1" or input_action == "Part2":
+                action_bros = tech_dict[input_action][date_indice].split(" / ")
+            else:
+                action_bros = [tech_dict[input_action][date_indice]]
+
+            busy_bros = []
+            for action in tech_dict:
+                if action == "Part1" or action == "Part2":
+                    busy_bros.extend(tech_dict[action][date_indice].split(" / "))
+                else:
+                    busy_bros.append(tech_dict[action][date_indice])
+
+            reduced_brothers_list = [bro for bro in brothers_list if bro not in busy_bros]
+
             return render_template("table_1.html",
-                                   dropdown_brothers_list=brothers_list,
+                                   dropdown_brothers_list=action_bros,
+                                   dropdown_reduced_brothers_list=reduced_brothers_list,
                                    input_action=input_action,
                                    tables=[return_df.to_html(classes='data', header="true")],
                                    action_date=action_date)
@@ -321,6 +338,7 @@ def generate_brother_list(date: str, action: str = "") -> list:
     connection = get_mysql_connection()
     cursor = connection.cursor()
     if action:
+        action = "Micro" if action == "Part1" or action == "Part2" else action
         query = "SELECT BrotherFirstName, BrotherLastName FROM Brother " \
                 "WHERE IdBrother NOT IN (SELECT IdBrother FROM BrotherAction WHERE ActionDate = '{}') " \
                 "AND {} = '1';".format(date, action)
