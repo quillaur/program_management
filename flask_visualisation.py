@@ -437,5 +437,5 @@ if __name__ == '__main__':
 # Insert sono program in mysql.
 # Extract function from this script to another.
 # Comment better all functions.
-# Select only available brothers / actions.
+# Insert in DB generated program.
 # Count brother actions.
