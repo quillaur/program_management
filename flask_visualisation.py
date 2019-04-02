@@ -273,5 +273,4 @@ if __name__ == '__main__':
 # TO DO
 # Insert sono program in mysql.
 # Count brother actions.
-# Create rule for chinese bros.
 # Create a page with brother roles.
