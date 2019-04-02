@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+	<body>
+
+		<table>
+			<link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet" type="text/css" />
+			{% for table in tables %}
+				{{ table|safe }}
+			{% endfor %}
+		</table>
+
+		<h3>Change brother action</h3>
+
+        <p>Selected action/date: {{ input_action }} / {{ action_date }}</p>
+
+		<form action = "http://localhost:5000/generate-sono-program/<action_date>" method = "POST" enctype = "multipart/form-data">
+		<p>Initial Brother:
+			 <select name = "init_brother">
+				{% for each in dropdown_brothers_list %}
+				   <option value="{{each}}">{{each}}</option>
+				{% endfor %}
+			 </select>
+
+			New Brother:
+			 <select name = "new_brother">
+				{% for each in dropdown_brothers_list %}
+				   <option value="{{each}}">{{each}}</option>
+				{% endfor %}
+			 </select>
+			<input type = "submit" name="submit_brothers" value = "Submit" />
+		</p>
+		</form>
+	</body>
+</html>
