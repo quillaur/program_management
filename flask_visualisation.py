@@ -202,7 +202,7 @@ def generate_sono_program(action_date):
     cursor.execute(query)
 
     # Remove chinese bros from official sono schedule until better a rule is found.
-    micro_bros = [row[0] for row in cursor if row[0] not in chinese_bros]
+    micro_bros = [row[0] for row in cursor]
 
     tech_dict = utilities.build_sono_program_dict(brother_action_dict=brother_action_dict,
                                                   sono_bros=sono_bros,

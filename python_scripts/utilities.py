@@ -3,6 +3,7 @@ import mysql.connector
 from collections import defaultdict
 import pandas
 from random import shuffle
+import datetime
 
 
 def split_brother_name(brother_full_name: str):
@@ -189,9 +190,7 @@ def build_sono_program_dict(brother_action_dict: dict,
     ordered_date = sorted(list(brother_action_dict))
     for date in ordered_date:
         # Available bros at this date = no participation at all that day:
-        available_sono_bros = [bro for bro in sono_bros
-                               if bro not in brother_action_dict[date]
-                               or bro not in chinese_bros]
+        available_sono_bros = [bro for bro in sono_bros if bro not in brother_action_dict[date]]
 
         # Remove the last brother who did sono
         if ordered_date.index(date) != 0:
@@ -233,12 +232,23 @@ def build_sono_program_dict(brother_action_dict: dict,
         brother_action_dict[date][stage_dict[date]] = action_dict["Stage"]
 
         # Micro bros
-        available_micro_bros = [bro for bro in micro_bros if bro not in brother_action_dict[date]]
+        format_date = datetime.datetime.strptime(str(date), '%Y-%m-%d')
+        if format_date.weekday() == 3:
+            part_1_available = [bro for bro in micro_bros
+                                if bro not in brother_action_dict[date]
+                                and bro not in chinese_bros]
+            part_2_available = [bro for bro in micro_bros if bro not in brother_action_dict[date]]
+        else:
+            part_1_available = [bro for bro in micro_bros
+                                if bro not in brother_action_dict[date]
+                                and bro not in chinese_bros]
+            part_2_available = part_1_available
 
-        shuffle(available_micro_bros)
+        shuffle(part_1_available)
+        shuffle(part_2_available)
         micro_dict[date] = {
-            "Part1": [brother_id_dict[available_micro_bros[0]], brother_id_dict[available_micro_bros[1]]],
-            "Part2": [brother_id_dict[available_micro_bros[2]], brother_id_dict[available_micro_bros[3]]]
+            "Part1": [brother_id_dict[part_1_available[0]], brother_id_dict[part_1_available[1]]],
+            "Part2": [brother_id_dict[part_2_available[2]], brother_id_dict[part_2_available[3]]]
         }
 
         tech_dict["Date"].append(str(date))
