@@ -6,11 +6,11 @@
 </head>
 <body>
     <form action = "http://localhost:5000/main_page" method = "POST" enctype = "multipart/form-data">
-        <p>For which date would you like to see the schedule ?</p>
+        <p>Update brother actions day by day:
         <input type="date" name="action_date">
         <input type = "submit" name="submit_button" value = "Submit" /></p>
 
-        <p>Select a month. =>
+        <p>Generate sono program for this month:
         <select name = "month">
             {% for each in dropdown_months_list %}
                 <option value="{{each}}">{{each}}</option>

@@ -19,23 +19,9 @@
 				{% endfor %}
 			 </select>
 			<input type="date" name="action_date">
-		</p>
-
-		<p>Initial Brother:
-			 <select name = "init_brother">
-				{% for each in dropdown_brothers_list %}
-				   <option value="{{each}}">{{each}}</option>
-				{% endfor %}
-			 </select>
-
-			New Brother:
-			 <select name = "new_brother">
-				{% for each in dropdown_brothers_list %}
-				   <option value="{{each}}">{{each}}</option>
-				{% endfor %}
-			 </select>
-			<input type = "submit" name="submit_action" value = "Submit" />
+			<input type = "submit" name="submit_action" value = "Select" />
 		</p>
 		</form>
+
 	</body>
 </html>

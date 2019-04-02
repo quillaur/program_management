@@ -36,15 +36,77 @@ def main_page():
 def generate_sono_program(action_date):
     if request.method == "POST":
         if "submit_action" in request.form:
-            input_init_brother = request.form["init_brother"]
             input_action = request.form["action"]
-            input_new_brother = request.form["new_brother"]
             action_date = request.form["action_date"]
+
+            # Current directory
+            current_dir = os.path.dirname(os.path.realpath(__file__))
+
+            # Keep track of date in a tmp file
+            filename = os.path.join(current_dir, "tmp_data/tmp_date.txt")
+            with open(filename, "w") as my_file:
+                my_file.write(str(action_date))
+
+            # Keep track of action in a tmp file
+            filename = os.path.join(current_dir, "tmp_data/tmp_action.txt")
+            with open(filename, "w") as my_file:
+                my_file.write(str(input_action))
+
+            # Get tech dict from tmp_data and modify it
+            filename = os.path.join(current_dir, "tmp_data/tmp_tech_dict.txt")
+            with open(filename, "r") as my_file:
+                handle = my_file.read()
+                tech_dict = literal_eval(handle)
+
+            return_df = pandas.DataFrame(tech_dict)
+
+            # Select brothers only available at this date and able to do the wanted action
+            brothers_list = generate_brother_list(date=action_date, action=input_action)
+
+            # Get brothers busy that day
+            date_indice = tech_dict["Date"].index(action_date)
+            if input_action == "Part1" or input_action == "Part2":
+                action_bros = tech_dict[input_action][date_indice].split(" / ")
+            else:
+                action_bros = [tech_dict[input_action][date_indice]]
+
+            busy_bros = []
+            for action in tech_dict:
+                if action == "Part1" or action == "Part2":
+                    busy_bros.extend(tech_dict[action][date_indice].split(" / "))
+                else:
+                    busy_bros.append(tech_dict[action][date_indice])
+
+            reduced_brothers_list = [bro for bro in brothers_list if bro not in busy_bros]
+
+            return render_template("table_1.html",
+                                   dropdown_brothers_list=action_bros,
+                                   dropdown_reduced_brothers_list=reduced_brothers_list,
+                                   input_action=input_action,
+                                   tables=[return_df.to_html(classes='data', header="true")],
+                                   action_date=action_date)
+
+        if "submit_brothers" in request.form:
+            input_init_brother = request.form["init_brother"]
+            input_new_brother = request.form["new_brother"]
 
             init_first_name, init_last_name = split_brother_name(brother_full_name=input_init_brother)
             new_first_name, new_last_name = split_brother_name(brother_full_name=input_new_brother)
 
-            # Get tech dict from tmp_data and mofidy it
+            # Current directory
+            current_dir = os.path.dirname(os.path.realpath(__file__))
+
+            # Get the previously selected date
+            filename = os.path.join(current_dir, "tmp_data/tmp_date.txt")
+            with open(filename, "r") as my_file:
+                action_date = my_file.read()
+
+            # Get the previously selected action
+            filename = os.path.join(current_dir, "tmp_data/tmp_action.txt")
+            with open(filename, "r") as my_file:
+                input_action = my_file.read()
+
+            # Get tech dict from tmp_data and modify it
             current_dir = os.path.dirname(os.path.realpath(__file__))
             filename = os.path.join(current_dir, "tmp_data/tmp_tech_dict.txt")
 
@@ -55,19 +117,18 @@ def generate_sono_program(action_date):
             # tech dict works with lists so get the indice of list contained by the "Date" key:
             date_indice = tech_dict["Date"].index(action_date)
             tech_dict[input_action][date_indice] = tech_dict[input_action][date_indice].replace(init_first_name,
-                                                                                                new_first_name).replace(init_last_name, new_last_name)
+                                                                                                new_first_name).replace(
+                init_last_name, new_last_name)
 
             with open(filename, "w") as my_file:
                 my_file.write(str(tech_dict))
 
             return_df = pandas.DataFrame(tech_dict)
 
-            brothers_list = generate_brother_list(date=action_date)
-
             actions_list = generate_action_list()
 
             return render_template("table.html",
-                                   dropdown_brothers_list=brothers_list,
+                                   dropdown_brothers_list=[],
                                    dropdown_actions_list=actions_list,
                                    tables=[return_df.to_html(classes='data', header="true")],
                                    action_date=action_date)
@@ -273,11 +334,17 @@ def select_brother_action_table(date: str = ""):
     return pandas.DataFrame(brother_action_dict)
 
 
-def generate_brother_list(date: str):
+def generate_brother_list(date: str, action: str = "") -> list:
     connection = get_mysql_connection()
     cursor = connection.cursor()
-    query = "SELECT BrotherFirstName, BrotherLastName FROM Brother " \
-            "WHERE IdBrother NOT IN (SELECT IdBrother FROM BrotherAction WHERE ActionDate = '{}');".format(date)
+    if action:
+        action = "Micro" if action == "Part1" or action == "Part2" else action
+        query = "SELECT BrotherFirstName, BrotherLastName FROM Brother " \
+                "WHERE IdBrother NOT IN (SELECT IdBrother FROM BrotherAction WHERE ActionDate = '{}') " \
+                "AND {} = '1';".format(date, action)
+    else:
+        query = "SELECT BrotherFirstName, BrotherLastName FROM Brother " \
+                "WHERE IdBrother NOT IN (SELECT IdBrother FROM BrotherAction WHERE ActionDate = '{}');".format(date)
     cursor.execute(query)
     brothers_list = ["{} {}".format(row[0], row[1]) for row in cursor]
     connection.close()
