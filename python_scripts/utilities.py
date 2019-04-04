@@ -4,6 +4,7 @@ from collections import defaultdict
 import pandas
 from random import shuffle
 import datetime
+import logging
 
 
 def split_brother_name(brother_full_name: str):
@@ -125,18 +126,53 @@ def insert_brother_action(brother: str, action: str, date: str):
 
     cursor = connection.cursor()
     cursor.execute(query)
+    rows = cursor.fetchall()
 
-    for row in cursor:
+    if len(rows) > 1:
+        print("WARNING: More than one result for these names: brother name = {} and action = {}"
+              "".format(brother, action))
+
+    for row in rows:
         insert_dict = {
             "id_brother": row[0],
             "id_action": row[1],
             "action_date": date
         }
 
+    # Insert Brother, action and date in mysql
     query = "INSERT INTO BrotherAction (idBrother, ActionDate, idAction) " \
             "VALUES (%(id_brother)s, %(action_date)s, %(id_action)s);"
     cursor.execute(query, insert_dict)
     connection.commit()
+
+    # Get action counts for each this brother
+    query = "SELECT IdActionCount, CountBrotherAction " \
+            "FROM ActionCount " \
+            "WHERE IdBrother = {} AND IdAction = {}".format(insert_dict["id_brother"], insert_dict["id_action"])
+
+    cursor.execute(query)
+    rows = cursor.fetchall()
+
+    if not rows:
+        # Insert this new couple of Brother / action:
+        query = "INSERT INTO ActionCount (idBrother, idAction, CountBrotherAction) " \
+                "VALUES (%(id_brother)s, %(id_action)s, 1);"
+        cursor.execute(query, insert_dict)
+        connection.commit()
+
+    elif len(rows) > 1:
+        print("WARNING: More than one IdActionCount for these IDs: brother ID = {} and action = {}"
+              "".format(insert_dict["id_brother"], insert_dict["id_action"]))
+    else:
+        # Update the count
+        for row in rows:
+            insert_dict["action_count"] = int(row[1]) + 1
+            insert_dict["id_action_count"] = int(row[0])
+
+        query = "INSERT INTO ActionCount (IdActionCount, CountBrotherAction) " \
+                "VALUES (%(id_action_count)s, %(action_count)s;"
+        cursor.execute(query, insert_dict)
+        connection.commit()
     connection.close()
 
 
