@@ -10,17 +10,19 @@
 		</table>
 
 		<form action = "http://localhost:5000/generate-sono-program/{{ action_date }}" method = "POST" enctype = "multipart/form-data">
-		<h3>Change brother action</h3>
-
-		<p>Action to change:
-			 <select name = "action">
-				{% for each in dropdown_actions_list %}
-				   <option value="{{each}}">{{each}}</option>
-				{% endfor %}
-			 </select>
-			<input type="date" name="action_date">
-			<input type = "submit" name="submit_action" value = "Select" />
-		</p>
+			<p>If you approve this program, please validate it: 
+				<input type = "submit" name="submit_program" value = "Validate it !" /></p>
+			
+			<h3>Change brother action</h3>
+			<p>Action to change:
+				 <select name = "action">
+					{% for each in dropdown_actions_list %}
+					   <option value="{{each}}">{{each}}</option>
+					{% endfor %}
+				 </select>
+				<input type="date" name="action_date">
+				<input type = "submit" name="submit_action" value = "Select" />
+			</p>
 		</form>
 
 	</body>

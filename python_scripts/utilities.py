@@ -169,8 +169,9 @@ def insert_brother_action(brother: str, action: str, date: str):
             insert_dict["action_count"] = int(row[1]) + 1
             insert_dict["id_action_count"] = int(row[0])
 
-        query = "INSERT INTO ActionCount (IdActionCount, CountBrotherAction) " \
-                "VALUES (%(id_action_count)s, %(action_count)s;"
+        query = "INSERT INTO ActionCount (IdActionCount, idBrother, idAction, CountBrotherAction) " \
+                "VALUES (%(id_action_count)s, %(id_brother)s, %(id_action)s, %(action_count)s) " \
+                "ON DUPLICATE KEY UPDATE CountBrotherAction = VALUES(CountBrotherAction);"
         cursor.execute(query, insert_dict)
         connection.commit()
     connection.close()

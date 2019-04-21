@@ -132,6 +132,18 @@ def generate_sono_program(action_date):
                                    tables=[return_df.to_html(classes='data', header="true")],
                                    action_date=action_date)
 
+        if "submit_program" in request.form:
+            # Current directory
+            current_dir = os.path.dirname(os.path.realpath(__file__))
+            # Get tech dict from tmp_data and insert it
+            filename = os.path.join(current_dir, "tmp_data/tmp_tech_dict.txt")
+            with open(filename, "r") as my_file:
+                handle = my_file.read()
+                tech_dict = literal_eval(handle)
+            "###################################################"
+            """Insert brother actions here using the tech_dict"""
+            "###################################################"
+
     input_month = action_date.lower()
     month_str_to_int = {
         "january": "01",
@@ -201,7 +213,6 @@ def generate_sono_program(action_date):
     query = "SELECT IdBrother FROM Brother WHERE Micro = '1';"
     cursor.execute(query)
 
-    # Remove chinese bros from official sono schedule until better a rule is found.
     micro_bros = [row[0] for row in cursor]
 
     tech_dict = utilities.build_sono_program_dict(brother_action_dict=brother_action_dict,
@@ -272,5 +283,5 @@ if __name__ == '__main__':
 # Connect via : http://localhost:5000/main_page
 # TO DO
 # Insert sono program in mysql.
-# Count brother actions.
+# Take into consideration the count of brother actions.
 # Create a page with brother roles.
