@@ -144,6 +144,8 @@ def generate_sono_program(action_date):
             """Insert brother actions here using the tech_dict"""
             "###################################################"
 
+            return "Work in progress..."
+
     input_month = action_date.lower()
     month_str_to_int = {
         "january": "01",
